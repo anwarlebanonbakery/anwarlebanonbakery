@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>أنوار لبنان | مخبز ومطعم</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --orange-dark:  #7A2800;
+  --orange-mid:   #B84000;
+  --orange-light: #D96A00;
+  --orange-glow:  #F08020;
+  --gold:         #D4960A;
+  --gold-light:   #F5C842;
+  --cream:        #FFF8F0;
+  --cream-dark:   #F5E8D5;
+  --cream-mid:    #EDD8BE;
+}
+
+/* ===== جزيئات متطايرة ===== */
+.particle { position: fixed; pointer-events: none; z-index: 0; opacity: 0; animation: particleFall linear infinite; }
+@keyframes particleFall {
+  0%   { transform: translateY(-40px) rotate(0deg) translateX(0px); opacity: 0; }
+  10%  { opacity: 0.6; }
+  90%  { opacity: 0.3; }
+  100% { transform: translateY(110vh) rotate(540deg) translateX(50px); opacity: 0; }
+}
+
+/* ===== خلفية وجسم ===== */
+body::after {
+  content: ''; position: fixed; inset: 0;
+  background-image: url('https://ibb.co/pg2hxRz');
+  background-size: cover; background-position: center; background-repeat: no-repeat;
+  opacity: 0.12; pointer-events: none; z-index: 0;
+}
+body {
+  min-height: 100vh;
+  background: linear-gradient(160deg, #1A0800 0%, #2E0F00 30%, #1A0800 70%, #0E0400 100%);
+  font-family: 'Tajawal', sans-serif;
+  display: flex; flex-direction: column; align-items: center;
+  padding: 40px 20px 70px; position: relative; overflow-x: hidden;
+}
+body::before {
+  content: ''; position: fixed; inset: 0;
+  background:
+    radial-gradient(ellipse at 15% 20%, rgba(180,64,0,0.18) 0%, transparent 55%),
+    radial-gradient(ellipse at 85% 80%, rgba(120,40,0,0.15) 0%, transparent 55%),
+    radial-gradient(ellipse at 50% 50%, rgba(212,150,10,0.04) 0%, transparent 70%);
+  pointer-events: none; z-index: 0;
+}
+.container { width: 100%; max-width: 440px; display: flex; flex-direction: column; align-items: center; position: relative; z-index: 1; }
+
+/* ===== لوجو وعنوان ===== */
+.logo-wrap {
+  width: 155px; height: 155px; border-radius: 50%; overflow: hidden;
+  border: 3px solid var(--gold);
+  box-shadow:
+    0 0 0 6px rgba(212,150,10,0.15),
+    0 0 0 10px rgba(120,40,0,0.12),
+    0 12px 40px rgba(180,64,0,0.4);
+  margin-bottom: 18px; animation: fadeDown 0.8s ease both;
+  position: relative;
+}
+.logo-wrap::after {
+  content: ''; position: absolute; inset: 0; border-radius: 50%;
+  background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, transparent 60%);
+  pointer-events: none;
+}
+.logo-wrap img { width: 100%; height: 100%; object-fit: cover; }
+.title-block { text-align: center; margin-bottom: 4px; animation: fadeDown 0.9s ease both; }
+.title-block h1 {
+  font-family: 'Tajawal', sans-serif; font-size: 30px; font-weight: 900;
+  background: linear-gradient(135deg, var(--gold-light), var(--gold), #B8820A);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  letter-spacing: 2px; text-shadow: none;
+}
+.title-block .subtitle {
+  font-family: 'Playfair Display', serif; font-size: 12px; color: var(--orange-glow);
+  letter-spacing: 4px; text-transform: uppercase; margin-top: 5px; opacity: 0.85;
+}
+.address-line {
+  font-size: 12px; color: rgba(245,200,66,0.65); text-align: center;
+  margin-top: 6px; line-height: 1.5;
+  font-family: 'Tajawal', sans-serif; letter-spacing: 0.5px;
+}
+.divider {
+  display: flex; align-items: center; gap: 12px;
+  margin: 14px 0 20px; width: 100%; animation: fadeDown 1s ease both;
+}
+.divider::before, .divider::after {
+  content: ''; flex: 1; height: 1px;
+  background: linear-gradient(to right, transparent, rgba(212,150,10,0.5), transparent);
+}
+.divider-icon { color: var(--gold); font-size: 14px; }
+
+/* ===== مؤشر الفتح/الغلق ===== */
+.status-badge {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 7px 18px; border-radius: 30px; font-family: 'Tajawal', sans-serif;
+  font-size: 13px; font-weight: 700; margin-bottom: 18px;
+  animation: fadeDown 1.05s ease both;
+}
+.status-badge.open   { background: rgba(180,220,100,0.1); border: 1.5px solid rgba(100,200,80,0.4); color: #90D870; }
+.status-badge.closed { background: rgba(220,80,60,0.1);   border: 1.5px solid rgba(220,80,60,0.4); color: #FF8070; }
+.status-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.status-badge.open  .status-dot { background: #6ADA50; box-shadow: 0 0 0 3px rgba(106,218,80,0.25); animation: pulse-green 1.8s infinite; }
+.status-badge.closed .status-dot { background: #FF6050; }
+@keyframes pulse-green {
+  0%,100% { box-shadow: 0 0 0 3px rgba(106,218,80,0.25); }
+  50%      { box-shadow: 0 0 0 6px rgba(106,218,80,0.08); }
+}
+
+/* ===== أزرار اللينك ===== */
+.links { width: 100%; display: flex; flex-direction: column; gap: 12px; }
+
+.link-btn {
+  display: flex; align-items: center; gap: 16px; padding: 17px 22px; border-radius: 18px;
+  text-decoration: none; transition: all 0.3s ease; border: 1px solid transparent; cursor: pointer;
+  position: relative; overflow: hidden;
+}
+.link-btn::before {
+  content: ''; position: absolute; inset: 0; opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 100%);
+}
+.link-btn:hover::before { opacity: 1; }
+.link-btn:hover { transform: translateY(-2px); }
+
+/* المنيو */
+.btn-menu {
+  background: linear-gradient(135deg, var(--orange-dark) 0%, var(--orange-mid) 100%);
+  border-color: rgba(212,150,10,0.4);
+  box-shadow: 0 4px 20px rgba(120,40,0,0.5), inset 0 1px 0 rgba(255,255,255,0.06);
+  animation: fadeUp 1.0s ease both;
+}
+.btn-menu:hover { box-shadow: 0 8px 30px rgba(180,64,0,0.6); }
+
+/* واتساب */
+.btn-whatsapp {
+  background: linear-gradient(135deg, #0F4A1A 0%, #196030 100%);
+  border-color: rgba(37,211,102,0.35);
+  box-shadow: 0 4px 20px rgba(10,60,20,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
+  animation: fadeUp 1.1s ease both;
+}
+.btn-whatsapp:hover { box-shadow: 0 8px 30px rgba(37,211,102,0.25); }
+
+/* فيسبوك */
+.btn-facebook {
+  background: linear-gradient(135deg, #0A2A5E 0%, #1A4090 100%);
+  border-color: rgba(66,103,178,0.4);
+  box-shadow: 0 4px 20px rgba(10,40,100,0.5), inset 0 1px 0 rgba(255,255,255,0.06);
+  animation: fadeUp 1.2s ease both;
+}
+.btn-facebook:hover { box-shadow: 0 8px 30px rgba(66,103,178,0.3); }
+
+/* انستغرام */
+.btn-instagram {
+  background: linear-gradient(135deg, #4A0A28 0%, #8C1A50 50%, #C04020 100%);
+  border-color: rgba(200,80,100,0.35);
+  box-shadow: 0 4px 20px rgba(80,10,40,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
+  animation: fadeUp 1.3s ease both;
+}
+.btn-instagram:hover { box-shadow: 0 8px 30px rgba(200,80,100,0.3); }
+
+/* تيك توك */
+.btn-tiktok {
+  background: linear-gradient(135deg, #080818 0%, #181830 100%);
+  border-color: rgba(105,201,208,0.3);
+  box-shadow: 0 4px 20px rgba(5,5,20,0.6), inset 0 1px 0 rgba(255,255,255,0.06);
+  animation: fadeUp 1.4s ease both;
+}
+.btn-tiktok:hover { box-shadow: 0 8px 30px rgba(105,201,208,0.2); }
+
+/* مشاركة */
+.btn-share {
+  background: linear-gradient(135deg, #1A0A00 0%, #3A1A00 100%);
+  border-color: rgba(212,150,10,0.25);
+  box-shadow: 0 4px 16px rgba(20,8,0,0.5);
+  animation: fadeUp 1.5s ease both;
+}
+.btn-share:hover { box-shadow: 0 8px 25px rgba(212,150,10,0.2); }
+
+/* رقم التلفون */
+.btn-phone {
+  background: linear-gradient(135deg, #1A1200 0%, #352400 100%);
+  border-color: rgba(212,150,10,0.3);
+  box-shadow: 0 4px 16px rgba(20,14,0,0.5);
+  animation: fadeUp 1.55s ease both;
+}
+.btn-phone:hover { box-shadow: 0 8px 25px rgba(212,150,10,0.2); }
+
+.btn-icon {
+  width: 46px; height: 46px; border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; font-size: 22px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.07);
+}
+.btn-menu .btn-icon    { background: rgba(212,150,10,0.2); border-color: rgba(212,150,10,0.2); }
+.btn-whatsapp .btn-icon { background: rgba(37,211,102,0.15); border-color: rgba(37,211,102,0.15); }
+.btn-tiktok .btn-icon  { background: rgba(105,201,208,0.12); border-color: rgba(105,201,208,0.15); }
+
+.btn-text { flex: 1; }
+.btn-label    { font-size: 15px; font-weight: 800; display: block; color: rgba(255,255,255,0.95); }
+.btn-sublabel { font-size: 11px; display: block; margin-top: 2px; color: rgba(255,255,255,0.5); }
+.btn-menu .btn-label     { color: var(--gold-light); }
+.btn-menu .btn-sublabel  { color: rgba(245,200,66,0.55); }
+
+.btn-arrow { font-size: 16px; color: rgba(255,255,255,0.3); transition: transform 0.3s; flex-shrink: 0; }
+.link-btn:hover .btn-arrow { transform: translateX(-4px); color: rgba(255,255,255,0.5); }
+
+/* ===== خريطة جوجل ===== */
+.map-section {
+  width: 100%; margin-top: 18px; border-radius: 20px; overflow: hidden;
+  border: 1px solid rgba(212,150,10,0.25);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+  animation: fadeUp 1.6s ease both;
+}
+.map-section iframe { width: 100%; height: 210px; display: block; border: none; }
+.map-nav-btn {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%; padding: 13px;
+  background: linear-gradient(135deg, var(--orange-dark), var(--orange-mid));
+  color: white; font-family: 'Tajawal', sans-serif; font-size: 14px; font-weight: 800;
+  border: none; cursor: pointer; transition: all 0.2s ease; text-decoration: none;
+}
+.map-nav-btn:hover { background: linear-gradient(135deg, var(--orange-mid), var(--orange-light)); }
+
+/* ===== أزرار ثابتة ===== */
+.sound-btn {
+  position: fixed; bottom: 20px; left: 20px; z-index: 300;
+  width: 46px; height: 46px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--orange-dark), var(--orange-mid));
+  border: 1.5px solid rgba(212,150,10,0.5);
+  color: white; font-size: 18px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 18px rgba(120,40,0,0.5); transition: all 0.3s ease;
+}
+.sound-btn:hover { transform: scale(1.1); }
+.sound-btn.muted { background: #2A1A10; border-color: rgba(255,255,255,0.1); }
+
+/* toast مشاركة */
+.share-toast {
+  position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(20px);
+  background: var(--orange-dark); color: white; padding: 10px 22px; border-radius: 30px;
+  font-family: 'Tajawal', sans-serif; font-size: 13px; font-weight: 700;
+  z-index: 400; border: 1px solid rgba(212,150,10,0.4);
+  opacity: 0; transition: all 0.3s ease; pointer-events: none; white-space: nowrap;
+}
+.share-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+.footer { margin-top: 26px; text-align: center; animation: fadeUp 1.7s ease both; position: relative; z-index: 1; }
+.footer-divider { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.footer-divider::before, .footer-divider::after {
+  content: ''; flex: 1; height: 1px;
+  background: linear-gradient(to right, transparent, rgba(212,150,10,0.2), transparent);
+}
+.footer p { font-size: 10px; color: rgba(255,255,255,0.2); letter-spacing: 1.5px; font-family: 'Playfair Display', serif; }
+
+@keyframes fadeDown { from { opacity:0; transform:translateY(-20px); } to { opacity:1; transform:translateY(0); } }
+@keyframes fadeUp   { from { opacity:0; transform:translateY(20px);  } to { opacity:1; transform:translateY(0); } }
+
+/* ===================================================
+   MENU MODAL
+   =================================================== */
+.menu-modal {
+  display: none; position: fixed; inset: 0; z-index: 200;
+  flex-direction: column;
+  background: linear-gradient(160deg, #1A0800 0%, #2E0F00 100%);
+}
+.menu-modal.active { display: flex; }
+
+.menu-topbar {
+  background: linear-gradient(90deg, #2E0F00, #4A1A00);
+  color: white;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 18px; flex-shrink: 0;
+  box-shadow: 0 2px 20px rgba(0,0,0,0.5);
+  border-bottom: 1px solid rgba(212,150,10,0.25);
+}
+.menu-topbar-title {
+  font-family: 'Tajawal', sans-serif; font-size: 17px; font-weight: 900;
+  background: linear-gradient(135deg, var(--gold-light), var(--gold));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.menu-close-btn {
+  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.8); border-radius: 24px; padding: 7px 18px;
+  font-family: 'Tajawal', sans-serif; font-size: 13px; font-weight: 700;
+  cursor: pointer; transition: all 0.2s;
+}
+.menu-close-btn:hover { background: rgba(255,255,255,0.15); color: white; }
+
+/* تبويبات */
+.menu-tabs {
+  display: flex; flex-shrink: 0; overflow-x: auto;
+  background: rgba(30,10,0,0.8);
+  border-bottom: 1px solid rgba(212,150,10,0.15);
+  scrollbar-width: none;
+}
+.menu-tabs::-webkit-scrollbar { display: none; }
+.menu-tab {
+  flex: 1; min-width: 80px; padding: 11px 6px; text-align: center;
+  font-family: 'Tajawal', sans-serif; font-size: 12px; font-weight: 700;
+  color: rgba(255,255,255,0.4); cursor: pointer;
+  border-bottom: 3px solid transparent; transition: all 0.2s; white-space: nowrap;
+}
+.menu-tab.active {
+  color: var(--gold-light); border-bottom-color: var(--gold);
+  background: rgba(212,150,10,0.07);
+}
+
+/* منطقة التمرير */
+.menu-scroll {
+  flex: 1; overflow-y: auto; padding: 0 0 40px;
+  scroll-behavior: smooth; -webkit-overflow-scrolling: touch;
+}
+
+/* قسم مخفي / مرئي */
+.menu-section { display: none; }
+.menu-section.active { display: block; }
+
+/* هيدر الفئة */
+.cat-header {
+  background: linear-gradient(90deg, rgba(120,40,0,0.8), rgba(60,20,0,0.8));
+  color: white;
+  display: flex; align-items: center; gap: 12px;
+  padding: 13px 18px; margin: 0;
+  border-bottom: 2px solid rgba(212,150,10,0.3);
+  position: sticky; top: 0; z-index: 10;
+  backdrop-filter: blur(8px);
+}
+.cat-header-icon {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: rgba(212,150,10,0.15);
+  border: 1px solid rgba(212,150,10,0.2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+}
+.cat-header-text { flex: 1; }
+.cat-header-ar { font-family: 'Tajawal', sans-serif; font-size: 16px; font-weight: 900; color: rgba(255,255,255,0.95); }
+.cat-header-en { font-family: 'Playfair Display', serif; font-size: 10px; color: var(--gold); letter-spacing: 1.5px; margin-top: 1px; }
+
+.sub-header {
+  background: rgba(60,20,0,0.5); color: rgba(255,255,255,0.75);
+  padding: 9px 18px; margin-top: 0;
+  font-family: 'Tajawal', sans-serif; font-size: 14px; font-weight: 700;
+  display: flex; align-items: center; gap: 8px;
+  border-bottom: 1px solid rgba(212,150,10,0.1);
+}
+.sub-header::before {
+  content: ''; display: block; width: 3px; height: 16px;
+  background: var(--gold); border-radius: 2px; flex-shrink: 0;
+}
+
+.items-list {
+  background: rgba(255,255,255,0.03);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.menu-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 12px 18px; border-bottom: 1px solid rgba(255,255,255,0.04);
+  transition: background 0.15s;
+}
+.menu-item:last-child { border-bottom: none; }
+.menu-item:active { background: rgba(255,255,255,0.04); }
+.item-name {
+  flex: 1; font-family: 'Tajawal', sans-serif; font-size: 14px;
+  font-weight: 600; color: rgba(255,255,255,0.88);
+}
+.item-desc {
+  font-size: 11px; color: rgba(255,255,255,0.38); font-weight: 400;
+  display: block; margin-top: 2px; line-height: 1.4;
+}
+.item-dots { flex: 1; height: 1px; border-top: 1px dashed rgba(255,255,255,0.1); margin: 0 6px; }
+.item-price {
+  font-family: 'Tajawal', sans-serif; font-size: 13px; font-weight: 900;
+  color: var(--gold-light); white-space: nowrap; flex-shrink: 0;
+  background: rgba(212,150,10,0.12);
+  padding: 3px 10px; border-radius: 20px;
+  border: 1px solid rgba(212,150,10,0.2);
+}
+.section-gap { height: 8px; background: rgba(0,0,0,0.2); }
+
+/* رسالة المنيو الفاضي */
+.menu-empty {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 60px 30px; text-align: center; gap: 14px;
+}
+.menu-empty .empty-icon { font-size: 48px; opacity: 0.4; }
+.menu-empty p { color: rgba(255,255,255,0.3); font-family: 'Tajawal', sans-serif; font-size: 15px; font-weight: 600; line-height: 1.6; }
+
+</style>
+</head>
+<body>
+
+<div id="particleContainer"></div>
+<button class="sound-btn muted" id="soundBtn" onclick="toggleSound()" title="تشغيل/إيقاف الموسيقى">🔇</button>
+<div class="share-toast" id="shareToast">✅ تم نسخ الرابط!</div>
+
+<div class="container">
+
+  <!-- لوجو -->
+  <div class="logo-wrap">
+    <img src="https://i.ibb.co/zhF3vDcj" onerror="this.src='https://ibb.co/zhF3vDcj'" alt="أنوار لبنان"/>
+  </div>
+
+  <!-- اسم المحل -->
+  <div class="title-block">
+    <h1>أنوار لبنان</h1>
+    <div class="subtitle">BAKERY &amp; RESTAURANT</div>
+  </div>
+  <div class="address-line">📍 دبا الفجيرة · المهلب · مقابل مسجد الشيخ زايد</div>
+
+  <div class="divider"><span class="divider-icon">✦</span></div>
+
+  <!-- مؤشر الفتح/الغلق -->
+  <div id="statusBadge" class="status-badge">
+    <span class="status-dot"></span>
+    <span id="statusText"></span>
+  </div>
+
+  <!-- الأزرار -->
+  <div class="links">
+
+    <!-- 1: المنيو -->
+    <div onclick="openMenu()" class="link-btn btn-menu">
+      <div class="btn-icon">🍽️</div>
+      <div class="btn-text">
+        <span class="btn-label">قائمة الطعام</span>
+        <span class="btn-sublabel">اطلع على كل الأصناف والأسعار</span>
+      </div>
+      <span class="btn-arrow">←</span>
+    </div>
+
+    <!-- 2: واتساب -->
+    <a href="https://wa.me/971507082056" target="_blank" class="link-btn btn-whatsapp">
+      <div class="btn-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="26" height="26" fill="white">
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+        </svg>
+      </div>
+      <div class="btn-text">
+        <span class="btn-label">اطلب عبر واتساب</span>
+        <span class="btn-sublabel">+971 50 708 2056</span>
+      </div>
+      <span class="btn-arrow">←</span>
+    </a>
+
+    <!-- 3: فيسبوك -->
+    <a href="https://www.facebook.com/share/1Ee7cBoCCr/" target="_blank" class="link-btn btn-facebook">
+      <div class="btn-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="26" height="26" fill="white">
+          <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+        </svg>
+      </div>
+      <div class="btn-text">
+        <span class="btn-label">Facebook</span>
+        <span class="btn-sublabel">تابعنا على فيسبوك</span>
+      </div>
+      <span class="btn-arrow">←</span>
+    </a>
+
+    <!-- 4: انستغرام -->
+    <a href="https://www.instagram.com/anwarlebanon_bakery?igsh=MXRrbWsxZ3RvdzJzaw==" target="_blank" class="link-btn btn-instagram">
+      <div class="btn-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="26" height="26" fill="white">
+          <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+        </svg>
+      </div>
+      <div class="btn-text">
+        <span class="btn-label">Instagram</span>
+        <span class="btn-sublabel">@anwarlebanon_bakery</span>
+      </div>
+      <span class="btn-arrow">←</span>
+    </a>
+
+    <!-- 5: تيك توك -->
+    <a href="https://www.tiktok.com/@anwarlebanon?_r=1&_t=ZS-96f4ngj321M" target="_blank" class="link-btn btn-tiktok">
+      <div class="btn-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="26" height="26" fill="white">
+          <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.87a8.18 8.18 0 004.77 1.52V6.9a4.85 4.85 0 01-1-.21z"/>
+        </svg>
+      </div>
+      <div class="btn-text">
+        <span class="btn-label">TikTok</span>
+        <span class="btn-sublabel">@anwarlebanon</span>
+      </div>
+      <span class="btn-arrow">←</span>
+    </a>
+
+    <!-- رقم التلفون -->
+    <a href="tel:092442889" class="link-btn btn-phone">
+      <div class="btn-icon">📞</div>
+      <div class="btn-text">
+        <span class="btn-label">اتصل بنا</span>
+        <span class="btn-sublabel">09 244 2889</span>
+      </div>
+      <span class="btn-arrow">←</span>
+    </a>
+
+    <!-- مشاركة -->
+    <div onclick="shareLink()" class="link-btn btn-share">
+      <div class="btn-icon">🔗</div>
+      <div class="btn-text">
+        <span class="btn-label">مشاركة الصفحة</span>
+        <span class="btn-sublabel">انسخ رابط الصفحة وابعته لأي حد</span>
+      </div>
+      <span class="btn-arrow">←</span>
+    </div>
+
+  </div>
+
+  <!-- خريطة جوجل -->
+  <div class="map-section">
+    <iframe
+      src="https://maps.google.com/maps?q=دبا+الفجيرة+المهلب+مسجد+الشيخ+زايد&output=embed&z=15"
+      allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+    </iframe>
+    <a class="map-nav-btn" href="https://maps.app.goo.gl/GPSJAMsMM65J58gX7?g_st=ac" target="_blank">
+      📍 وجّهني للمكان
+    </a>
+  </div>
+
+  <div class="footer">
+    <div class="footer-divider"><span style="color:rgba(212,150,10,0.3);font-size:12px;">✦</span></div>
+    <p>ANWAR LEBANON · BAKERY &amp; RESTAURANT</p>
+  </div>
+
+</div>
+
+<!-- ================================================================
+     MENU MODAL
+     ================================================================ -->
+<div class="menu-modal" id="menuModal">
+
+  <div class="menu-topbar">
+    <div class="menu-topbar-title">🍽️ قائمة أنوار لبنان</div>
+    <button class="menu-close-btn" onclick="closeMenu()">✕ إغلاق</button>
+  </div>
+
+  <div class="menu-tabs">
+    <div class="menu-tab active" onclick="switchTab(0)">🥐 المخبوزات</div>
+    <div class="menu-tab" onclick="switchTab(1)">🍕 المعجنات</div>
+    <div class="menu-tab" onclick="switchTab(2)">🥗 الأطباق</div>
+    <div class="menu-tab" onclick="switchTab(3)">🧃 المشروبات</div>
+    <div class="menu-tab" onclick="switchTab(4)">🍰 الحلويات</div>
+  </div>
+
+  <div class="menu-scroll" id="menuScroll">
+
+    <div class="menu-section active" id="tab-0">
+      <div class="menu-empty">
+        <div class="empty-icon">🥐</div>
+        <p>قائمة الأصناف ستُضاف قريباً<br/>ابقَ على تواصل معنا</p>
+      </div>
+    </div>
+
+    <div class="menu-section" id="tab-1">
+      <div class="menu-empty">
+        <div class="empty-icon">🍕</div>
+        <p>قائمة الأصناف ستُضاف قريباً<br/>ابقَ على تواصل معنا</p>
+      </div>
+    </div>
+
+    <div class="menu-section" id="tab-2">
+      <div class="menu-empty">
+        <div class="empty-icon">🥗</div>
+        <p>قائمة الأصناف ستُضاف قريباً<br/>ابقَ على تواصل معنا</p>
+      </div>
+    </div>
+
+    <div class="menu-section" id="tab-3">
+      <div class="menu-empty">
+        <div class="empty-icon">🧃</div>
+        <p>قائمة الأصناف ستُضاف قريباً<br/>ابقَ على تواصل معنا</p>
+      </div>
+    </div>
+
+    <div class="menu-section" id="tab-4">
+      <div class="menu-empty">
+        <div class="empty-icon">🍰</div>
+        <p>قائمة الأصناف ستُضاف قريباً<br/>ابقَ على تواصل معنا</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   AUDIO
+   ============================================================ */
+let audioCtx = null, musicNodes = null, musicOn = false;
+const soundBtn = document.getElementById('soundBtn');
+
+function getOrCreateCtx() {
+  if (!audioCtx || audioCtx.state === 'closed')
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return audioCtx;
+}
+function toggleSound() { musicOn ? stopMusic() : startMusic(); }
+function startMusic() {
+  if (musicOn) return;
+  const ctx = getOrCreateCtx();
+  (ctx.state === 'suspended' ? ctx.resume() : Promise.resolve()).then(() => {
+    musicNodes = buildCafeMusic(ctx); musicOn = true;
+    soundBtn.textContent = '🔊'; soundBtn.classList.remove('muted');
+  });
+}
+function stopMusic() {
+  if (!musicOn || !musicNodes) return;
+  try {
+    clearInterval(musicNodes.chordTimer); clearInterval(musicNodes.bassTimer); clearInterval(musicNodes.hatTimer);
+    const ctx = audioCtx;
+    if (ctx && ctx.state !== 'closed') {
+      musicNodes.masterGain.gain.cancelScheduledValues(ctx.currentTime);
+      musicNodes.masterGain.gain.setValueAtTime(musicNodes.masterGain.gain.value, ctx.currentTime);
+      musicNodes.masterGain.gain.linearRampToValueAtTime(0.0001, ctx.currentTime + 0.4);
+      setTimeout(() => { try { ctx.close(); } catch(e){} audioCtx = null; }, 500);
+    }
+  } catch(e) {}
+  musicOn = false; musicNodes = null;
+  soundBtn.textContent = '🔇'; soundBtn.classList.add('muted');
+}
+function buildCafeMusic(ctx) {
+  const masterGain = ctx.createGain(); masterGain.gain.value = 0; masterGain.connect(ctx.destination);
+  masterGain.gain.linearRampToValueAtTime(0.09, ctx.currentTime + 2);
+  const delay = ctx.createDelay(0.6); delay.delayTime.value = 0.35;
+  const delayGain = ctx.createGain(); delayGain.gain.value = 0.2;
+  delay.connect(delayGain); delayGain.connect(delay); delayGain.connect(masterGain);
+  const delayLPF = ctx.createBiquadFilter(); delayLPF.type = 'lowpass'; delayLPF.frequency.value = 2000;
+  delayGain.connect(delayLPF); delayLPF.connect(masterGain);
+  function playNote(freq,dur,vol,type,when) {
+    try {
+      if (!ctx||ctx.state==='closed') return;
+      const osc=ctx.createOscillator(), g=ctx.createGain();
+      osc.type=type||'sine'; osc.frequency.value=freq;
+      g.gain.setValueAtTime(0,when); g.gain.linearRampToValueAtTime(vol,when+0.06);
+      g.gain.setValueAtTime(vol*0.7,when+dur*0.5); g.gain.exponentialRampToValueAtTime(0.0001,when+dur);
+      osc.connect(g); g.connect(delay); g.connect(masterGain); osc.start(when); osc.stop(when+dur+0.15);
+    } catch(e){}
+  }
+  const progressions=[[220,261.63,329.63,392,493.88],[174.61,220,261.63,329.63,392],[261.63,329.63,392,493.88,587.33],[196,246.94,293.66,349.23,440]];
+  const bassLines=[[55,65.41,73.42,82.41],[43.65,55,65.41,73.42],[65.41,73.42,82.41,98],[49,61.74,73.42,82.41]];
+  let chordIdx=0,beatCount=0,beat16=0;
+  function scheduleChord() {
+    if (!ctx||ctx.state==='closed') return; const now=ctx.currentTime;
+    const chord=progressions[chordIdx%progressions.length];
+    chord.forEach((f,i)=>{ const oct=i<2?1:(i<4?2:4); playNote(f*oct,2.2,0.02+i*0.003,'sine',now+i*0.06); });
+    playNote(chord[2]*4,1.4,0.015,'triangle',now+0.15);
+    if(Math.random()>0.5) playNote(chord[3]*4,0.9,0.01,'triangle',now+0.8); chordIdx++;
+  }
+  function scheduleBass() {
+    if (!ctx||ctx.state==='closed') return; const now=ctx.currentTime;
+    const prog=bassLines[Math.floor(beatCount/4)%bassLines.length], note=prog[beatCount%prog.length];
+    playNote(note,0.5,0.055,'triangle',now); playNote(note*2,0.3,0.012,'sine',now); beatCount++;
+  }
+  function scheduleHihat(soft) {
+    if (!ctx||ctx.state==='closed') return; const now=ctx.currentTime;
+    const bufSize=Math.floor(ctx.sampleRate*0.04), buf=ctx.createBuffer(1,bufSize,ctx.sampleRate);
+    const d=buf.getChannelData(0); for(let i=0;i<bufSize;i++) d[i]=(Math.random()*2-1)*Math.exp(-i/(bufSize*0.25));
+    const src=ctx.createBufferSource(); src.buffer=buf;
+    const hpf=ctx.createBiquadFilter(); hpf.type='highpass'; hpf.frequency.value=soft?6000:9000;
+    const hg=ctx.createGain(); hg.gain.value=soft?0.03:0.06;
+    src.connect(hpf); hpf.connect(hg); hg.connect(masterGain); src.start(now);
+  }
+  scheduleChord(); scheduleBass();
+  const chordTimer=setInterval(scheduleChord,2400), bassTimer=setInterval(scheduleBass,600);
+  const hatTimer=setInterval(()=>{ scheduleHihat(beat16++%2!==0); },300);
+  return { masterGain, chordTimer, bassTimer, hatTimer };
+}
+document.addEventListener('visibilitychange',()=>{ if(document.hidden) stopMusic(); });
+window.addEventListener('pagehide', stopMusic);
+
+/* ============================================================
+   مؤشر الفتح / الغلق — توقيت الإمارات (دبي)
+   ============================================================ */
+function updateStatus() {
+  const now = new Date();
+  const uaeTime = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Dubai' }));
+  const h = uaeTime.getHours(), m = uaeTime.getMinutes();
+  const totalMins = h * 60 + m;
+  const openMins  = 6 * 60;
+  const closeMins = 24 * 60;
+  const isOpen = totalMins >= openMins;
+  const badge = document.getElementById('statusBadge');
+  const text  = document.getElementById('statusText');
+  if (isOpen) {
+    badge.className = 'status-badge open';
+    const minsLeft = closeMins - totalMins;
+    text.textContent = minsLeft <= 60
+      ? `مفتوح الآن · يغلق بعد ${minsLeft} دقيقة`
+      : 'مفتوح الآن ✓';
+  } else {
+    badge.className = 'status-badge closed';
+    const minsToOpen = openMins - totalMins;
+    const hO = Math.floor(minsToOpen/60), mO = minsToOpen%60;
+    text.textContent = `مغلق حالياً · يفتح بعد ${hO>0?hO+' ساعة ':' '}${mO} دقيقة`;
+  }
+}
+updateStatus();
+setInterval(updateStatus, 60000);
+
+/* ============================================================
+   جزيئات متطايرة
+   ============================================================ */
+(function(){
+  const container = document.getElementById('particleContainer');
+  const shapes = ['✦','·','✧','⬡','◈'];
+  const colors  = ['rgba(212,150,10,0.5)','rgba(180,64,0,0.4)','rgba(245,200,66,0.35)','rgba(120,40,0,0.3)'];
+  function createParticle() {
+    const div = document.createElement('div'); div.className = 'particle';
+    const size     = 6 + Math.random() * 10;
+    const color    = colors[Math.floor(Math.random() * colors.length)];
+    const shape    = shapes[Math.floor(Math.random() * shapes.length)];
+    const left     = Math.random() * 100;
+    const duration = 8 + Math.random() * 10;
+    const delay    = Math.random() * 8;
+    div.style.cssText = `left:${left}vw;top:0;font-size:${size}px;color:${color};animation-duration:${duration}s;animation-delay:${delay}s;`;
+    div.textContent = shape;
+    container.appendChild(div);
+    setTimeout(() => div.remove(), (duration + delay + 1) * 1000);
+  }
+  for(let i = 0; i < 10; i++) setTimeout(createParticle, i * 700);
+  setInterval(createParticle, 1400);
+})();
+
+/* ============================================================
+   مشاركة الرابط
+   ============================================================ */
+function shareLink() {
+  const url = window.location.href;
+  if (navigator.share) {
+    navigator.share({ title: 'أنوار لبنان', url }).catch(()=>{});
+  } else {
+    navigator.clipboard.writeText(url).then(() => {
+      const toast = document.getElementById('shareToast');
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2500);
+    }).catch(() => { prompt('انسخ الرابط:', url); });
+  }
+}
+
+/* ============================================================
+   MENU MODAL
+   ============================================================ */
+const menuModal    = document.getElementById('menuModal');
+const menuTabs     = document.querySelectorAll('.menu-tab');
+const menuSections = document.querySelectorAll('.menu-section');
+
+function openMenu() {
+  menuModal.classList.add('active');
+  document.body.style.overflow = 'hidden';
+  document.getElementById('menuScroll').scrollTop = 0;
+}
+function closeMenu() {
+  menuModal.classList.remove('active');
+  document.body.style.overflow = '';
+}
+function switchTab(idx) {
+  menuTabs.forEach((t,i)     => t.classList.toggle('active', i===idx));
+  menuSections.forEach((s,i) => s.classList.toggle('active', i===idx));
+  document.getElementById('menuScroll').scrollTop = 0;
+}
+
+window.addEventListener('popstate', () => {
+  if (menuModal.classList.contains('active')) { closeMenu(); history.pushState(null,'',location.href); }
+});
+menuModal.addEventListener('touchstart', function(e){
+  if (e.target === menuModal) closeMenu();
+}, { passive: true });
+</script>
+</body>
+</html>
