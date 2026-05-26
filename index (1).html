@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>أنوار لبنان | مخبز ومطعم</title>
+<link href="https://fonts.googleapis.com/css2?family=Lalezar&family=Cormorant+Garamond:wght@400;600;700&family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg:         #F7F2EB;
+  --bg2:        #EFE8DC;
+  --espresso:   #2B1506;
+  --brown:      #6B3A1F;
+  --brown-mid:  #9A5C32;
+  --gold:       #B8830A;
+  --gold-light: #D4A830;
+  --cream:      #FAF6F0;
+  --white:      #FFFFFF;
+  --text:       #1E0E04;
+  --text-soft:  #7A5840;
+  --border:     #E0D0BE;
+  --shadow:     rgba(43,21,6,0.08);
+}
+
+body {
+  min-height: 100vh;
+  background-color: var(--bg);
+  background-image: url('https://i.ibb.co/TM96TBRZ/file-00000000ef6872438d08b552faeaf084.png');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  font-family: 'Tajawal', sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 46px 20px 68px;
+  position: relative;
+}
+
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background: linear-gradient(to bottom, rgba(247,242,235,0.62) 0%, rgba(239,232,220,0.58) 100%);
+  pointer-events: none; z-index: 0;
+}
+
+.container {
+  width: 100%; max-width: 430px;
+  display: flex; flex-direction: column; align-items: center;
+  position: relative; z-index: 1;
+  opacity: 0; transform: translateY(20px);
+  transition: opacity 0.55s ease, transform 0.55s ease;
+}
+.container.visible { opacity: 1; transform: translateY(0); }
+
+.logo-name-block {
+  display: flex; flex-direction: column; align-items: center;
+  margin-bottom: 12px;
+}
+
+.logo-img {
+  width: 230px; height: 230px; object-fit: contain;
+  margin-bottom: -18px;
+  filter: drop-shadow(0 6px 22px rgba(43,21,6,0.22));
+}
+
+.site-name {
+  font-family: 'Lalezar', cursive;
+  font-size: 66px; font-weight: 400;
+  color: #A01A10;
+  letter-spacing: 2px;
+  text-shadow: 0 2px 10px rgba(160,26,16,0.18);
+  line-height: 1.1;
+  text-align: center;
+}
+.site-subtitle {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 12px; letter-spacing: 6px; text-transform: uppercase;
+  color: var(--brown-mid); margin-top: 6px;
+}
+
+.heritage-pill {
+  display: inline-flex; flex-direction: column; align-items: center; gap: 4px;
+  padding: 10px 26px 12px;
+  background: transparent;
+  border-radius: 30px;
+  border: none;
+  box-shadow: none;
+  margin-bottom: 10px;
+}
+.heritage-since {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 13px; font-weight: 700; letter-spacing: 6px; text-transform: uppercase;
+  color: var(--gold);
+  text-shadow: 0 1px 6px rgba(184,131,10,0.25);
+}
+.heritage-dot { display: none; }
+.heritage-text {
+  font-family: 'Lalezar', cursive;
+  font-size: 21px; font-weight: 400; color: var(--espresso); letter-spacing: 1px;
+  text-shadow: 0 1px 8px rgba(43,21,6,0.18);
+}
+
+.divider {
+  display: flex; align-items: center; gap: 10px;
+  margin: 16px 0 14px; width: 100%;
+}
+.divider::before, .divider::after {
+  content: ''; flex: 1; height: 1px;
+  background: linear-gradient(to right, transparent, var(--border), transparent);
+}
+.divider-icon { color: var(--gold); font-size: 10px; letter-spacing: 4px; }
+
+.status-badge {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 7px 18px; border-radius: 30px;
+  font-size: 12px; font-weight: 700;
+  margin-bottom: 20px;
+  border: 1px solid;
+}
+.status-badge.open  { background: rgba(40,160,80,0.07); border-color: rgba(40,160,80,0.20); color: #1A7A3A; }
+.status-badge.closed{ background: rgba(200,60,40,0.06); border-color: rgba(200,60,40,0.20); color: #A03020; }
+.status-dot {
+  width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0;
+}
+.status-badge.open  .status-dot { background: #28A050; box-shadow: 0 0 5px rgba(40,160,80,0.6); animation: blink 2s infinite; }
+.status-badge.closed .status-dot { background: #C83C28; }
+
+.links { width: 100%; display: flex; flex-direction: column; gap: 10px; }
+
+.link-btn {
+  display: flex; align-items: center; gap: 14px;
+  padding: 15px 18px;
+  border-radius: 16px;
+  background: rgba(255,252,248,0.52);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(224,208,190,0.60);
+  box-shadow: 0 2px 16px rgba(43,21,6,0.07), inset 0 1px 0 rgba(255,255,255,0.5);
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.24s cubic-bezier(0.4,0,0.2,1);
+  position: relative; overflow: hidden;
+}
+.link-btn:hover {
+  background: rgba(255,252,248,0.72);
+  border-color: rgba(184,131,10,0.35);
+  box-shadow: 0 8px 28px rgba(43,21,6,0.14), inset 0 1px 0 rgba(255,255,255,0.7);
+  transform: translateY(-2px);
+}
+.link-btn:active { transform: translateY(0); }
+
+.link-btn::before {
+  content: '';
+  position: absolute; right: 0; top: 20%; bottom: 20%;
+  width: 3px; border-radius: 3px 0 0 3px;
+  opacity: 0.6; transition: opacity 0.2s;
+}
+.link-btn:hover::before { opacity: 1; }
+
+.link-btn::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(184,131,10,0.04) 0%, transparent 60%);
+  opacity: 0; pointer-events: none; transition: opacity 0.24s;
+}
+.link-btn:hover::after { opacity: 1; }
+
+.btn-menu::before      { background: #E8920A; }
+.btn-whatsapp::before  { background: #25D366; }
+.btn-talabat::before   { background: #FF6B35; }
+.btn-facebook::before  { background: #1877F2; }
+.btn-instagram::before { background: #E1306C; }
+.btn-tiktok::before    { background: #010101; }
+.btn-phone::before     { background: #7C4DFF; }
+.btn-share::before     { background: var(--gold); }
+
+.btn-icon {
+  width: 44px; height: 44px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; font-size: 20px;
+  border: 1px solid rgba(224,208,190,0.4);
+  transition: transform 0.22s, box-shadow 0.22s;
+}
+.link-btn:hover .btn-icon { transform: scale(1.07); box-shadow: 0 4px 12px rgba(43,21,6,0.10); }
+
+.btn-menu      .btn-icon { background: rgba(255,243,224,0.65); }
+.btn-whatsapp  .btn-icon { background: rgba(232,247,238,0.65); }
+.btn-talabat   .btn-icon { background: rgba(255,240,238,0.65); }
+.btn-facebook  .btn-icon { background: rgba(238,242,255,0.65); }
+.btn-instagram .btn-icon { background: rgba(255,240,245,0.65); }
+.btn-tiktok    .btn-icon { background: rgba(240,240,248,0.65); }
+.btn-phone     .btn-icon { background: rgba(245,240,255,0.65); }
+.btn-share     .btn-icon { background: rgba(245,245,240,0.65); }
+
+.btn-text { flex: 1; min-width: 0; }
+.btn-label {
+  display: block; font-size: 14px; font-weight: 900;
+  color: #1A0A00;
+  text-shadow: 0 1px 2px rgba(255,252,248,0.8);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.btn-sublabel {
+  display: block; font-size: 11px; font-weight: 600;
+  color: #5A3820; margin-top: 2px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+.btn-arrow {
+  flex-shrink: 0;
+  color: var(--border);
+  transition: color 0.22s, transform 0.22s;
+  display: flex; align-items: center;
+}
+.link-btn:hover .btn-arrow {
+  color: var(--gold);
+  transform: translateX(-3px);
+}
+
+.map-section {
+  width: 100%; margin-top: 20px;
+  border-radius: 20px; overflow: hidden;
+  border: 1px solid rgba(224,208,190,0.6);
+  box-shadow: 0 4px 24px rgba(43,21,6,0.10);
+}
+.map-section iframe { width: 100%; height: 200px; display: block; border: none; }
+.map-nav-btn {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%; padding: 13px 16px;
+  background: var(--espresso);
+  color: var(--gold-light);
+  font-family: 'Tajawal', sans-serif; font-size: 14px; font-weight: 800;
+  border: none; cursor: pointer; text-decoration: none;
+  transition: background 0.2s; letter-spacing: 0.5px;
+}
+.map-nav-btn:hover { background: var(--brown); }
+
+.footer {
+  margin-top: 28px; text-align: center; width: 100%;
+}
+.footer-divider {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 10px;
+}
+.footer-divider::before, .footer-divider::after {
+  content: ''; flex: 1; height: 1px; background: var(--border);
+}
+.footer p {
+  font-size: 10px; color: var(--text-soft);
+  letter-spacing: 2px; font-family: 'Cormorant Garamond', serif;
+  text-transform: uppercase;
+}
+
+.share-toast {
+  position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(16px);
+  background: var(--espresso); color: var(--gold-light);
+  padding: 10px 22px; border-radius: 30px;
+  font-family: 'Tajawal', sans-serif; font-size: 13px; font-weight: 700;
+  z-index: 400; border: 1px solid rgba(184,131,10,0.3);
+  opacity: 0; transition: all 0.3s; pointer-events: none; white-space: nowrap;
+}
+.share-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+@keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0.35; } }
+</style>
+</head>
+<body>
+
+<div class="share-toast" id="shareToast">✅ تم نسخ الرابط!</div>
+
+<div class="container" id="mainContainer">
+
+  <div class="logo-name-block">
+    <img src="https://i.ibb.co/C56jGDdN/file-000000008d3c71f7bd863cb6dc63ca7a.png" alt="أنوار لبنان" class="logo-img"/>
+    <h1 class="site-name">أنوار لبنان</h1>
+    <div class="site-subtitle">Bakery &amp; Sweets</div>
+  </div>
+
+  <div class="heritage-pill">
+    <span class="heritage-since">Since 1985</span>
+    <span class="heritage-dot">·</span>
+    <span class="heritage-text">٤١ عاماً من العطاء والأصالة</span>
+  </div>
+
+  <div class="divider"><span class="divider-icon">✦ ✦ ✦</span></div>
+
+  <div id="statusBadge" class="status-badge">
+    <span class="status-dot"></span>
+    <span id="statusText"></span>
+  </div>
+
+  <div class="links">
+
+    <a href="menu.html" class="link-btn btn-menu">
+      <div class="btn-icon">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#C9820A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </div>
+      <div class="btn-text">
+        <span class="btn-label">قائمة الطعام</span>
+        <span class="btn-sublabel">اطلع على كل الأصناف والأسعار</span>
+      </div>
+      <span class="btn-arrow">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </span>
+    </a>
+
+    <a href="https://wa.me/971507082056" target="_blank" class="link-btn btn-whatsapp">
+      <div class="btn-icon">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      </div>
+      <div class="btn-text">
+        <span class="btn-label">اطلب عبر واتساب</span>
+        <span class="btn-sublabel">+971 50 708 2056</span>
+      </div>
+      <span class="btn-arrow"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></span>
+    </a>
+
+    <a href="https://www.talabat.com/ar/uae/restaurant/788269/anwar-lebanon-bakery-and-sweets-qidfa?aid=3899" target="_blank" class="link-btn btn-talabat">
+      <div class="btn-icon">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#FF6B35" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </div>
+      <div class="btn-text">
+        <span class="btn-label">اطلب عبر طلبات</span>
+        <span class="btn-sublabel">توصيل سريع لبيتك</span>
+      </div>
+      <span class="btn-arrow"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></span>
+    </a>
+
+    <a href="https://www.facebook.com/share/1Ee7cBoCCr/" target="_blank" class="link-btn btn-facebook">
+      <div class="btn-icon">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+      </div>
+      <div class="btn-text">
+        <span class="btn-label">Facebook</span>
+        <span class="btn-sublabel">تابعنا على فيسبوك</span>
+      </div>
+      <span class="btn-arrow"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></span>
+    </a>
+
+    <a href="https://www.instagram.com/anwarlebanon_bakery?igsh=MXRrbWsxZ3RvdzJzaw==" target="_blank" class="link-btn btn-instagram">
+      <div class="btn-icon">
+        <svg viewBox="0 0 24 24" width="22" height="22">
+          <defs><linearGradient id="ig" x1="0%" y1="100%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:#f09433"/><stop offset="25%" style="stop-color:#e6683c"/><stop offset="50%" style="stop-color:#dc2743"/><stop offset="75%" style="stop-color:#cc2366"/><stop offset="100%" style="stop-color:#bc1888"/></linearGradient></defs>
+          <path fill="url(#ig)" d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+        </svg>
+      </div>
+      <div class="btn-text">
+        <span class="btn-label">Instagram</span>
+        <span class="btn-sublabel">@anwarlebanon_bakery</span>
+      </div>
+      <span class="btn-arrow"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></span>
+    </a>
+
+    <a href="https://www.tiktok.com/@anwarlebanon?_r=1&_t=ZS-96f4ngj321M" target="_blank" class="link-btn btn-tiktok">
+      <div class="btn-icon">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="#010101"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.87a8.18 8.18 0 004.77 1.52V6.9a4.85 4.85 0 01-1-.21z"/></svg>
+      </div>
+      <div class="btn-text">
+        <span class="btn-label">TikTok</span>
+        <span class="btn-sublabel">@anwarlebanon</span>
+      </div>
+      <span class="btn-arrow"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></span>
+    </a>
+
+    <a href="tel:092442889" class="link-btn btn-phone">
+      <div class="btn-icon">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#7C4DFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.8 19.79 19.79 0 011.04 1.22 2 2 0 013 0h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L7.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14.92z"/></svg>
+      </div>
+      <div class="btn-text">
+        <span class="btn-label">اتصل بنا</span>
+        <span class="btn-sublabel">09 244 2889</span>
+      </div>
+      <span class="btn-arrow"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></span>
+    </a>
+
+    <div onclick="shareLink()" class="link-btn btn-share">
+      <div class="btn-icon">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#B8830A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+      </div>
+      <div class="btn-text">
+        <span class="btn-label">مشاركة الصفحة</span>
+        <span class="btn-sublabel">انسخ رابط الصفحة وشاركه مع أصدقائك</span>
+      </div>
+      <span class="btn-arrow"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></span>
+    </div>
+
+  </div>
+
+  <div class="map-section">
+    <iframe src="https://maps.google.com/maps?q=دبا+الفجيرة+المهلب+مسجد+الشيخ+زايد&output=embed&z=15"
+      allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+    <a class="map-nav-btn" href="https://maps.app.goo.gl/GPSJAMsMM65J58gX7?g_st=ac" target="_blank">
+      📍 &nbsp;وجّهني للمكان
+    </a>
+  </div>
+
+  <div class="footer">
+    <div class="footer-divider"><span style="color:var(--border);font-size:11px;">✦</span></div>
+    <p>Anwar Lebanon &nbsp;·&nbsp; Bakery &amp; Restaurant</p>
+  </div>
+
+</div>
+
+<script>
+window.addEventListener('load', () => {
+  setTimeout(() => document.getElementById('mainContainer').classList.add('visible'), 80);
+});
+
+function updateStatus() {
+  const now = new Date();
+  const uae = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Dubai' }));
+  const mins = uae.getHours() * 60 + uae.getMinutes();
+  const isOpen = mins >= 360 && mins < 1440;
+  const badge = document.getElementById('statusBadge');
+  const text  = document.getElementById('statusText');
+  if (isOpen) {
+    badge.className = 'status-badge open';
+    const left = 1440 - mins;
+    text.textContent = left <= 60 ? `مفتوح الآن · يغلق بعد ${left} دقيقة` : 'مفتوح الآن · 6ص – 12م';
+  } else {
+    badge.className = 'status-badge closed';
+    text.textContent = 'مغلق حالياً · يفتح الساعة 6 صباحاً';
+  }
+}
+updateStatus(); setInterval(updateStatus, 60000);
+
+function shareLink() {
+  const url = window.location.href;
+  if (navigator.share) {
+    navigator.share({ title: 'أنوار لبنان', url }).catch(()=>{});
+  } else {
+    navigator.clipboard.writeText(url).then(() => {
+      const t = document.getElementById('shareToast');
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }).catch(() => { prompt('انسخ الرابط:', url); });
+  }
+}
+</script>
+</body>
+</html>
