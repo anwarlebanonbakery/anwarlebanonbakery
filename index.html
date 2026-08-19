@@ -669,6 +669,26 @@ body {
 }
 .inner-banner.img-loaded { opacity: 1; }
 
+/* ── Scroll-more indicator (bouncing arrow shown on menu home) ── */
+.scroll-more-indicator {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  padding: 6px 0 18px;
+  opacity: 0; transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+.scroll-more-indicator.show { opacity: 1; }
+.scroll-more-indicator span {
+  font-size: 11px; font-weight: 700; color: var(--m-brown-m);
+  letter-spacing: 0.5px;
+}
+.scroll-more-indicator svg {
+  animation: scrollBounce 1.4s ease-in-out infinite;
+}
+@keyframes scrollBounce {
+  0%, 100% { transform: translateY(0); opacity: 0.6; }
+  50%       { transform: translateY(6px); opacity: 1; }
+}
+
 </style>
 </head>
 <body>
@@ -843,7 +863,7 @@ body {
     </div>
 
     <div style="background:var(--cream);flex:1;">
-      <div class="home-grid">
+      <div class="home-grid" id="homeGrid">
 
         <div class="cat-card" onclick="openCategory('oriental')">
           <div class="cat-img-wrap">
@@ -885,7 +905,7 @@ body {
           </div>
           <div class="cat-body">
             <div class="cat-name">الفطير المشلتت</div>
-            <div class="cat-meta"><div class="cat-arrow">←</div><div class="cat-count">📋 دوس لعرض المنيو</div></div>
+            <div class="cat-meta"><div class="cat-arrow">←</div><div class="cat-count">📋 اضغط لعرض المنيو</div></div>
           </div>
         </div>
 
@@ -896,10 +916,15 @@ body {
           </div>
           <div class="cat-body">
             <div class="cat-name">البيتزا</div>
-            <div class="cat-meta"><div class="cat-arrow">←</div><div class="cat-count">4 أصناف</div></div>
+            <div class="cat-meta"><div class="cat-arrow">←</div><div class="cat-count">📋 اضغط لعرض المنيو</div></div>
           </div>
         </div>
 
+      </div>
+
+      <div class="scroll-more-indicator" id="scrollMoreIndicator">
+        <span>في المزيد بالأسفل</span>
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#B8830A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
       </div>
     </div>
 
@@ -1010,12 +1035,29 @@ function showMenu() {
   document.getElementById('page-main').classList.remove('active');
   document.getElementById('page-menu').classList.add('active');
   window.scrollTo(0, 0);
+  checkScrollIndicator();
 }
 function hideMenu() {
   document.getElementById('page-menu').classList.remove('active');
   document.getElementById('page-main').classList.add('active');
   window.scrollTo(0, 0);
 }
+
+/* ── Scroll-more indicator: show only while there's more content below ── */
+function checkScrollIndicator() {
+  const indicator = document.getElementById('scrollMoreIndicator');
+  if (!indicator) return;
+  const atBottom = (window.innerHeight + window.scrollY) >= (document.documentElement.scrollHeight - 24);
+  const homeActive = document.getElementById('view-home').classList.contains('active');
+  if (homeActive && !atBottom) {
+    indicator.classList.add('show');
+  } else {
+    indicator.classList.remove('show');
+  }
+}
+window.addEventListener('scroll', checkScrollIndicator);
+window.addEventListener('resize', checkScrollIndicator);
+setTimeout(checkScrollIndicator, 600);
 
 /* ── Menu categories data ── */
 const categories = {
@@ -1151,6 +1193,7 @@ function goHome(){
   document.getElementById('view-image').classList.remove('active');
   document.getElementById('view-home').classList.add('active');
   window.scrollTo(0, 0);
+  setTimeout(checkScrollIndicator, 200);
 }
 
 function openImageMenu(imgUrl, title){
