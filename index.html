@@ -288,63 +288,78 @@ body {
 }
 .map-nav-btn:active { background: #4A2510; }
 
-/* ── Branches page ("فروعنا") ── */
+/* ── Branches page ("فروعنا") ──────────────────────────
+   Mobile-first: all 3 branches sit side-by-side in a compact
+   3-column grid so they're visible together without scrolling.
+   The @media(min-width:720px) block below restores the roomier
+   desktop presentation. ── */
 #page-branches { background: var(--cream); min-height: 100vh; }
-.branches-page-header { text-align: center; padding: 26px 16px 6px; }
+.branches-page-header { text-align: center; padding: 14px 16px 4px; }
 .branches-title {
-  font-family: 'Lalezar', cursive; font-size: 30px; font-weight: 400;
+  font-family: 'Lalezar', cursive; font-size: clamp(22px, 6vw, 30px); font-weight: 400;
   color: #6B1208; line-height: 1.0;
 }
 .branches-subtitle {
-  font-family: 'Cormorant Garamond', serif; font-size: 12px;
-  letter-spacing: 3px; text-transform: uppercase; color: #8A5C32; margin-top: 4px;
+  font-family: 'Cormorant Garamond', serif; font-size: 11px;
+  letter-spacing: 2.5px; text-transform: uppercase; color: #8A5C32; margin-top: 3px;
 }
 .branches-subtitle::after {
-  content: ''; display: block; margin: 7px auto 0;
-  width: 50px; height: 1px;
+  content: ''; display: block; margin: 5px auto 0;
+  width: 40px; height: 1px;
   background: linear-gradient(to right, transparent, #B8830A, transparent);
 }
 .branches-grid {
-  display: grid; grid-template-columns: 1fr; gap: 14px;
-  width: 100%; padding: 16px 16px 40px;
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px;
+  width: 100%; padding: 8px 10px 16px; max-width: 100%;
 }
 .branch-card {
   background: rgba(255,253,249,0.9);
   border: 1px solid rgba(220,205,185,0.70);
-  border-radius: 20px; overflow: hidden;
-  box-shadow: 0 4px 20px rgba(43,21,6,0.08);
-  display: flex; flex-direction: column;
+  border-radius: 12px; overflow: hidden;
+  box-shadow: 0 3px 12px rgba(43,21,6,0.08);
+  display: flex; flex-direction: column; min-width: 0;
 }
 .branch-img-wrap {
-  width: 100%; aspect-ratio: 16/10; background: var(--cream-d); overflow: hidden;
+  width: 100%; aspect-ratio: 4/3; background: var(--cream-d); overflow: hidden;
 }
 .branch-img {
   width: 100%; height: 100%; object-fit: cover; display: block;
   opacity: 0; transition: opacity 0.4s ease;
 }
 .branch-img.img-loaded { opacity: 1; }
-.branch-info { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 10px; }
+.branch-info { padding: 6px 5px 8px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
 .branch-name {
-  font-family: 'Tajawal', sans-serif; font-size: 16px; font-weight: 800;
-  color: #1A0A00; text-align: center;
+  font-family: 'Tajawal', sans-serif; font-size: clamp(10.5px, 3vw, 12.5px); font-weight: 800;
+  color: #1A0A00; text-align: center; line-height: 1.15;
+  overflow-wrap: break-word; word-break: break-word;
 }
-.branch-actions { display: flex; gap: 8px; }
+.branch-actions { display: flex; flex-direction: column; gap: 5px; margin-top: auto; }
 .branch-btn {
-  flex: 1; display: flex; align-items: center; justify-content: center;
-  gap: 6px; padding: 12px 10px; border-radius: 12px;
-  font-family: 'Tajawal', sans-serif; font-size: 13px; font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  gap: 4px; padding: 7px 4px; border-radius: 8px; min-height: 30px;
+  font-family: 'Tajawal', sans-serif; font-size: clamp(9.5px, 2.6vw, 11px); font-weight: 800;
   text-decoration: none; cursor: pointer; -webkit-tap-highlight-color: transparent;
-  transition: transform 0.2s;
+  transition: transform 0.2s; text-align: center; line-height: 1.1;
 }
 .branch-btn:active { transform: scale(0.96); }
 .branch-btn-map { background: #2B1506; color: #D4A830; }
 .branch-btn-call { background: #FFF3E0; color: var(--orange-d); border: 1px solid rgba(224,123,12,0.25); }
 
 @media (min-width: 720px) {
+  .branches-page-header { padding: 26px 16px 6px; }
+  .branches-title { font-size: 30px; }
+  .branches-subtitle { font-size: 12px; letter-spacing: 3px; }
+  .branches-subtitle::after { width: 50px; margin-top: 7px; }
   .branches-grid {
     grid-template-columns: repeat(3, 1fr); max-width: 960px;
     margin: 0 auto; gap: 20px; padding: 16px 24px 50px;
   }
+  .branch-card { border-radius: 20px; box-shadow: 0 4px 20px rgba(43,21,6,0.08); }
+  .branch-img-wrap { aspect-ratio: 16/10; }
+  .branch-info { padding: 14px 16px 16px; gap: 10px; }
+  .branch-name { font-size: 16px; }
+  .branch-actions { flex-direction: row; gap: 8px; }
+  .branch-btn { flex: 1; padding: 12px 10px; border-radius: 12px; font-size: 13px; min-height: 0; }
 }
 
 /* ── Footer ── */
@@ -1142,8 +1157,8 @@ function renderBranches() {
       <div class="branch-info">
         <h3 class="branch-name">${b.name}</h3>
         <div class="branch-actions">
-          <a class="branch-btn branch-btn-map" href="${b.mapsUrl}" target="_blank" rel="noopener">الاتجاهات</a>
-          <a class="branch-btn branch-btn-call" href="tel:${b.phone}">اتصل بنا</a>
+          <a class="branch-btn branch-btn-map" href="${b.mapsUrl}" target="_blank" rel="noopener" aria-label="الاتجاهات إلى ${b.name}">الاتجاهات</a>
+          <a class="branch-btn branch-btn-call" href="tel:${b.phone}" aria-label="اتصل بفرع ${b.name}">اتصل بنا</a>
         </div>
       </div>
     </div>
