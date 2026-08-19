@@ -11,6 +11,8 @@
 ══════════════════════════════════════ -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://i.ibb.co">
+<link rel="preconnect" href="https://raw.githubusercontent.com">
 <link rel="preload" as="style" id="fontsPreload"
   href="https://fonts.googleapis.com/css2?family=Lalezar&family=Cormorant+Garamond:wght@400;700&family=Cairo:wght@400;700;900&family=Tajawal:wght@400;500;700;800;900&display=swap">
 <link rel="stylesheet" media="print" onload="this.media='all'"
@@ -108,6 +110,7 @@ body {
   background-image: url('https://i.ibb.co/TM96TBRZ/file-00000000ef6872438d08b552faeaf084.png');
   background-size: cover; background-position: center top;
   transform: scale(1.06); transition: transform 9s cubic-bezier(0.25,0.46,0.45,0.94);
+  will-change: transform;
 }
 .main-hero-section.loaded .main-hero-bg { transform: scale(1); }
 /* top-to-bottom fade: very light at top, fully opaque beige at bottom */
@@ -630,10 +633,10 @@ body {
   animation: shimmer 1.2s linear;
 }
 
-/* Inner view products entrance */
+/* Inner view products entrance — batched via CSS transition-delay (see JS) */
 #products-grid .prod-card {
   opacity: 0; transform: translateY(22px);
-  transition: opacity 0.4s ease, transform 0.4s ease;
+  transition: opacity .4s ease, transform .4s ease;
 }
 #products-grid .prod-card.show {
   opacity: 1; transform: translateY(0);
@@ -1004,7 +1007,7 @@ body {
    Runs immediately — cheap, no layout thrash.
 ══════════════════════════════════════ */
 
-/* ── Status badge ── */
+/* ── Status badge (minute-level updates only) ── */
 function updateStatus() {
   const now = new Date();
   const uae = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Dubai' }));
@@ -1035,17 +1038,32 @@ function setupImageLoading(img, fallback) {
 }
 document.querySelectorAll('.cat-img, .inner-banner').forEach(img => setupImageLoading(img, CAT_FALLBACK));
 
-/* ── Fade in main page ── */
+/* ── Reveal main page: decoupled from window.load so FCP isn't
+   blocked on the hero image or any other network resource. The
+   container itself has no dependency on images to become visible. ── */
 function revealMain() {
   document.getElementById('mainContainer').classList.add('visible');
-  const hero = document.getElementById('mainHero');
-  if (hero) hero.classList.add('loaded');
 }
-if (document.readyState === 'complete') {
-  requestAnimationFrame(() => setTimeout(revealMain, 30));
+if (document.readyState !== 'loading') {
+  requestAnimationFrame(revealMain);
 } else {
-  window.addEventListener('load', () => requestAnimationFrame(() => setTimeout(revealMain, 30)));
+  document.addEventListener('DOMContentLoaded', () => requestAnimationFrame(revealMain), { once: true });
 }
+
+/* Hero zoom-out effect fires only once the hero photo itself is
+   actually decoded, independent of the rest of the page/resources. */
+(function primeHeroLoaded(){
+  const heroSection = document.getElementById('mainHero');
+  if (!heroSection) return;
+  const heroUrl = 'https://i.ibb.co/TM96TBRZ/file-00000000ef6872438d08b552faeaf084.png';
+  const mark = () => heroSection.classList.add('loaded');
+  const probe = new Image();
+  probe.onload = mark;
+  probe.onerror = mark;
+  probe.src = heroUrl;
+  // Safety net in case decode/cache timing is unusual on some browsers.
+  if (probe.complete) mark();
+})();
 
 /* ── Share ── */
 function shareLink() {
@@ -1090,14 +1108,15 @@ function hideMenu() {
   window.scrollTo(0, 0);
 }
 
-/* ── Scroll-more indicator ── */
+/* ── Scroll-more indicator (rAF-throttled, passive listener) ── */
 let scrollTicking = false;
+const scrollMoreIndicatorEl = document.getElementById('scrollMoreIndicator');
+const viewHomeEl = document.getElementById('view-home');
 function checkScrollIndicator() {
-  const indicator = document.getElementById('scrollMoreIndicator');
-  if (!indicator) return;
+  if (!scrollMoreIndicatorEl) return;
   const atBottom = (window.innerHeight + window.scrollY) >= (document.documentElement.scrollHeight - 24);
-  const homeActive = document.getElementById('view-home').classList.contains('active');
-  indicator.classList.toggle('show', homeActive && !atBottom);
+  const homeActive = viewHomeEl.classList.contains('active');
+  scrollMoreIndicatorEl.classList.toggle('show', homeActive && !atBottom);
 }
 window.addEventListener('scroll', () => {
   if (!scrollTicking) {
@@ -1105,7 +1124,7 @@ window.addEventListener('scroll', () => {
     requestAnimationFrame(() => { checkScrollIndicator(); scrollTicking = false; });
   }
 }, { passive: true });
-window.addEventListener('resize', checkScrollIndicator);
+window.addEventListener('resize', checkScrollIndicator, { passive: true });
 setTimeout(checkScrollIndicator, 600);
 
 /* ══════════════════════════════════════
@@ -1193,6 +1212,24 @@ function buildBadgeHTML(item){
   return `<div class="prod-badge no-price">—</div>`;
 }
 
+/* Cache the products grid reference once and attach a single
+   delegated error/load listener for ALL product images, present and
+   future — avoids adding a fresh inline handler per <img> per category. */
+const productsGrid = document.getElementById('products-grid');
+productsGrid.addEventListener('error', function(e){
+  const img = e.target;
+  if (img.tagName === 'IMG' && img.classList.contains('prod-img')) {
+    if (img.src !== fallbackImg) img.src = fallbackImg;
+    img.classList.add('img-loaded');
+  }
+}, true); // error doesn't bubble — capture phase required
+productsGrid.addEventListener('load', function(e){
+  const img = e.target;
+  if (img.tagName === 'IMG' && img.classList.contains('prod-img')) {
+    img.classList.add('img-loaded');
+  }
+}, true);
+
 /* Product DOM/images are created ONLY when a category is opened — never before */
 function openCategory(key){
   const cat = categories[key];
@@ -1204,7 +1241,7 @@ function openCategory(key){
   setupImageLoading(bannerImg, fallbackImg);
   document.getElementById('inner-tag').textContent = cat.tag;
 
-  const grid = document.getElementById('products-grid');
+  const grid = productsGrid;
   grid.innerHTML = '';
   const frag = document.createDocumentFragment();
   cat.items.forEach((item)=>{
@@ -1222,9 +1259,7 @@ function openCategory(key){
       manaesh = `<div class="manaesh-types">${item.manaeshTypes.map(t=>`<span class="manaesh-chip">${t}</span>`).join('')}</div>`;
     card.innerHTML=`
       <div class="prod-img-wrap">
-        <img class="prod-img" src="${item.img}" alt="${item.name}" loading="lazy" decoding="async"
-          onerror="this.src='${fallbackImg}';this.classList.add('img-loaded');"
-          onload="this.classList.add('img-loaded');"/>
+        <img class="prod-img" src="${item.img}" alt="${item.name}" loading="lazy" decoding="async"/>
         ${buildBadgeHTML(item)}
       </div>
       <div class="prod-body">
@@ -1241,9 +1276,18 @@ function openCategory(key){
   });
   grid.appendChild(frag);
 
+  /* Staggered entrance via CSS transition-delay set once per card,
+     then a single rAF flips them all to visible — no per-card
+     setTimeout timers, even for long product lists. Delay is capped
+     so long lists don't drag out the reveal. */
+  const cards = grid.querySelectorAll('.prod-card');
+  cards.forEach((c, i) => {
+    c.style.transitionDelay = (Math.min(i, 10) * 50) + 'ms';
+  });
   requestAnimationFrame(() => {
-    const cards = grid.querySelectorAll('.prod-card');
-    cards.forEach((c,i)=> setTimeout(()=>c.classList.add('show'), 60+i*55));
+    requestAnimationFrame(() => {
+      cards.forEach(c => c.classList.add('show'));
+    });
   });
 
   document.getElementById('view-home').classList.remove('active');
@@ -1285,6 +1329,11 @@ function openImageMenu(imgUrl, title){
   const TARGET_FPS = 30;
   const FRAME_MS = 1000 / TARGET_FPS;
 
+  function debounce(fn, ms){
+    let t;
+    return function(...args){ clearTimeout(t); t = setTimeout(() => fn.apply(this, args), ms); };
+  }
+
   function startWhenIdle(fn){
     if ('requestIdleCallback' in window) {
       requestIdleCallback(fn, { timeout: 1500 });
@@ -1309,7 +1358,7 @@ function openImageMenu(imgUrl, title){
     const COUNT  = isSmallScreen ? 5 : 10;
 
     function resize(){ W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
-    window.addEventListener('resize', resize, { passive: true });
+    window.addEventListener('resize', debounce(resize, 200), { passive: true });
     resize();
 
     function randBetween(a,b){ return a + Math.random()*(b-a); }
@@ -1361,14 +1410,18 @@ function openImageMenu(imgUrl, title){
 
       ctx.clearRect(0,0,W,H);
       frame++;
-      leaves.forEach(l=>{
+      // In-place update + removal (no per-frame array allocation via filter())
+      let writeIdx = 0;
+      for (let i = 0; i < leaves.length; i++){
+        const l = leaves[i];
         l.y += l.speedY;
         l.x += l.speedX + Math.sin(frame*0.012 + l.swayOff) * l.sway;
         l.angle += l.spin;
-        if (l.y > H + 30) l.dead = true;
-        if (!l.dead) drawLeaf(l);
-      });
-      leaves = leaves.filter(l => !l.dead);
+        if (l.y > H + 30) continue; // drop dead leaf, don't keep it
+        drawLeaf(l);
+        leaves[writeIdx++] = l;
+      }
+      leaves.length = writeIdx;
       if (frame < 900 && leaves.length < COUNT) leaves.push(createLeaf(false));
 
       if (leaves.length === 0 && frame >= 900) {
@@ -1405,7 +1458,7 @@ function openImageMenu(imgUrl, title){
       logoY = 28 + 65;
       logoR = 68;
     }
-    window.addEventListener('resize', resize, { passive: true });
+    window.addEventListener('resize', debounce(resize, 200), { passive: true });
     resize();
 
     const PCOUNT = isSmallScreen ? 9 : 18;
@@ -1461,9 +1514,12 @@ function openImageMenu(imgUrl, title){
 
       if (frame > 45) {
         if (Math.random() < (isSmallScreen ? 0.05 : 0.08)) sparkles.push(createSparkle());
-        sparkles = sparkles.filter(s => {
+        // In-place update + removal (avoids reallocating the array every frame)
+        let writeIdx = 0;
+        for (let i = 0; i < sparkles.length; i++){
+          const s = sparkles[i];
           s.life++;
-          if (s.life > s.maxLife) return false;
+          if (s.life > s.maxLife) continue;
           const t = s.life/s.maxLife;
           const alpha = t < 0.3 ? t/0.3 : t > 0.7 ? (1-t)/0.3 : 1;
           const size  = s.size * (0.5 + 0.5*Math.sin(Math.PI*t));
@@ -1475,17 +1531,18 @@ function openImageMenu(imgUrl, title){
           ctx.shadowColor = s.color;
           ctx.shadowBlur = 4;
           ctx.beginPath();
-          for(let i=0;i<8;i++){
-            const r2 = i%2===0 ? size : size*0.4;
-            const a  = (Math.PI/4)*i - Math.PI/2;
-            i===0 ? ctx.moveTo(Math.cos(a)*r2, Math.sin(a)*r2)
+          for(let j=0;j<8;j++){
+            const r2 = j%2===0 ? size : size*0.4;
+            const a  = (Math.PI/4)*j - Math.PI/2;
+            j===0 ? ctx.moveTo(Math.cos(a)*r2, Math.sin(a)*r2)
                   : ctx.lineTo(Math.cos(a)*r2, Math.sin(a)*r2);
           }
           ctx.closePath();
           ctx.fill();
           ctx.restore();
-          return true;
-        });
+          sparkles[writeIdx++] = s;
+        }
+        sparkles.length = writeIdx;
       }
     }
 
