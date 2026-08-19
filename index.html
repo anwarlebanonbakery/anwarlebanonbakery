@@ -54,6 +54,8 @@
   --green:       #1F7A4D;
   --green-d:     #145C36;
   --green-light: #E6F5EC;
+  --green-deep:  #0D3622;
+  --green-deep-grad: linear-gradient(135deg, #0A2E1C 0%, #14432B 55%, #1C5C3C 100%);
 }
 
 html, body { height: 100%; }
@@ -285,12 +287,12 @@ body {
 .map-placeholder .mp-sub { font-size: 11px; color: var(--m-brown-m); }
 .map-nav-btn {
   display: flex; align-items: center; justify-content: center; gap: 8px;
-  width: 100%; padding: 13px 16px; background: var(--green-d);
+  width: 100%; padding: 13px 16px; background: var(--green-deep-grad);
   color: #D4A830; font-family: 'Tajawal', sans-serif;
   font-size: 14px; font-weight: 800; border: none; cursor: pointer;
   text-decoration: none; transition: background 0.2s; letter-spacing: 0.5px;
 }
-.map-nav-btn:active { background: #1D7A48; }
+.map-nav-btn:active { background: var(--green-deep); }
 
 /* ── Branches page ("فروعنا") ──────────────────────────
    Discovery-app layout: sticky search bar + quick-jump chips
@@ -344,7 +346,7 @@ body {
   background: var(--white); color: var(--m-brown); border: 1px solid rgba(200,200,200,0.6);
   cursor: pointer; transition: background .2s, color .2s, border-color .2s;
 }
-.branches-chip.active { background: var(--green-d); color: #F0D9A8; border-color: var(--green-d); }
+.branches-chip.active { background: var(--green-deep-grad); color: #F0D9A8; border-color: var(--green-deep); }
 .branches-chip:active { transform: scale(0.96); }
 
 .branches-empty {
@@ -362,6 +364,7 @@ body {
 .branch-card {
   background: var(--white);
   border: 1px solid rgba(200,200,200,0.55);
+  border-top: 2px solid var(--green-deep);
   border-radius: 20px; overflow: hidden;
   box-shadow: 0 4px 20px rgba(43,21,6,0.08);
   scroll-margin-top: 90px;
@@ -390,7 +393,7 @@ body {
 .branch-status-pill.open .dot  { background: #28A050; }
 .branch-status-pill.closed .dot{ background: #C83C28; }
 .branch-tag-pill {
-  background: rgba(20,92,54,0.82); color: #F0D9A8; backdrop-filter: blur(6px);
+  background: rgba(13,54,34,0.88); color: #F0D9A8; backdrop-filter: blur(6px);
   font-family: 'Cairo', sans-serif; font-size: 11px; font-weight: 800;
   padding: 5px 12px; border-radius: 20px; white-space: nowrap;
 }
@@ -419,7 +422,7 @@ body {
   transition: transform 0.2s; text-align: center; line-height: 1.1;
 }
 .branch-btn:active { transform: scale(0.97); }
-.branch-btn-map { background: var(--green-d); color: #D4A830; flex: 1; }
+.branch-btn-map { background: var(--green-deep-grad); color: #D4A830; flex: 1; }
 .branch-btn-call { background: var(--green-light); color: var(--green-d); border: 1px solid rgba(31,122,77,0.25); flex: 1; }
 
 @media (min-width: 720px) {
@@ -444,7 +447,7 @@ body {
 /* ── Toast ── */
 .share-toast {
   position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(16px);
-  background: var(--green-d); color: #D4A830;
+  background: var(--green-deep-grad); color: #D4A830;
   padding: 10px 22px; border-radius: 30px;
   font-family: 'Tajawal', sans-serif; font-size: 13px; font-weight: 700;
   z-index: 400; border: 1px solid rgba(184,131,10,0.3);
@@ -461,7 +464,7 @@ body {
 .menu-view.active { display: flex; }
 
 .main-back-bar {
-  background: var(--green-d);
+  background: var(--green-deep-grad);
   padding: 10px 16px;
   display: flex; align-items: center; flex-shrink: 0;
 }
