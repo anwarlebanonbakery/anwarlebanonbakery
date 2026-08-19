@@ -45,6 +45,17 @@ body {
 .page { display: none; }
 .page.active { display: block; }
 
+/* ── Single-image menu view (e.g. pizza photo menu) ── */
+.image-menu-wrap {
+  width: 100%; padding: 0 16px 40px;
+  display: flex; justify-content: center;
+}
+.image-menu-photo {
+  width: 100%; max-width: 500px;
+  border-radius: 16px; display: block;
+  box-shadow: 0 6px 24px rgba(43,21,6,0.15);
+}
+
 /* ══════════════════════════════════════
    MAIN PAGE
 ══════════════════════════════════════ */
@@ -878,7 +889,18 @@ body {
           </div>
         </div>
 
-        <div class="cat-card wide" onclick="openCategory('pizza')">
+        <div class="cat-card wide" onclick="openImageMenu('https://raw.githubusercontent.com/anwarlebanonbakery/bakery-images/main/5_20260819_181017_٠٠٠٠.png','الفطير المشلتت')">
+          <div class="cat-img-wrap">
+            <img class="cat-img" src="https://raw.githubusercontent.com/anwarlebanonbakery/bakery-images/main/FB_IMG_1779783656876.jpg" alt="فطير مشلتت" loading="lazy"/>
+            <div class="cat-img-overlay"></div>
+          </div>
+          <div class="cat-body">
+            <div class="cat-name">الفطير المشلتت</div>
+            <div class="cat-meta"><div class="cat-arrow">←</div><div class="cat-count">📋 دوس لعرض المنيو</div></div>
+          </div>
+        </div>
+
+        <div class="cat-card wide" onclick="openImageMenu('https://raw.githubusercontent.com/anwarlebanonbakery/bakery-images/main/فلفل_20260819_182728_٠٠٠٠.png','البيتزا')">
           <div class="cat-img-wrap">
             <img class="cat-img" src="https://raw.githubusercontent.com/anwarlebanonbakery/bakery-images/main/file_0000000046c072468e8ffdc10da83e64.png" alt="بيتزا" loading="lazy"/>
             <div class="cat-img-overlay"></div>
@@ -908,6 +930,18 @@ body {
       </div>
     </div>
     <div class="products-grid" id="products-grid"></div>
+  </div>
+
+  <!-- MENU IMAGE VIEW (single full menu photo) -->
+  <div class="menu-view" id="view-image">
+    <div class="inner-header">
+      <div class="inner-back-btn" onclick="goHome()">→</div>
+      <span class="inner-emoji" id="image-emoji">🍕</span>
+      <span class="inner-title" id="image-title"></span>
+    </div>
+    <div class="image-menu-wrap">
+      <img class="image-menu-photo" id="image-menu-photo" src="" alt=""/>
+    </div>
   </div>
 
 </div>
@@ -1134,7 +1168,17 @@ function openCategory(key){
 
 function goHome(){
   document.getElementById('view-inner').classList.remove('active');
+  document.getElementById('view-image').classList.remove('active');
   document.getElementById('view-home').classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function openImageMenu(imgUrl, title){
+  document.getElementById('image-title').textContent = title;
+  document.getElementById('image-menu-photo').src = imgUrl;
+  document.getElementById('view-home').classList.remove('active');
+  document.getElementById('view-inner').classList.remove('active');
+  document.getElementById('view-image').classList.add('active');
   window.scrollTo(0, 0);
 }
 </script>
