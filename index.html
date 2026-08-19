@@ -217,6 +217,7 @@ body {
   width: 3px; border-radius: 3px 0 0 3px; opacity: 0.7;
 }
 .btn-menu::before      { background: #E8920A; }
+.btn-branches::before  { background: #7C4DFF; }
 .btn-whatsapp::before  { background: #25D366; }
 .btn-talabat::before   { background: #FF6B35; }
 .btn-facebook::before  { background: #1877F2; }
@@ -233,6 +234,7 @@ body {
 }
 .link-btn:active .btn-icon { transform: scale(0.94); }
 .btn-menu      .btn-icon { background: #FFF3E0; }
+.btn-branches  .btn-icon { background: #F5F0FF; }
 .btn-whatsapp  .btn-icon { background: #E8F7EE; }
 .btn-talabat   .btn-icon { background: #FFF0EC; }
 .btn-facebook  .btn-icon { background: #EEF2FF; }
@@ -286,11 +288,9 @@ body {
 }
 .map-nav-btn:active { background: #4A2510; }
 
-/* ── Branches ("فروعنا") ── */
-.branches-section {
-  width: 100%; margin-top: 4px;
-}
-.branches-header { text-align: center; margin-bottom: 14px; }
+/* ── Branches page ("فروعنا") ── */
+#page-branches { background: var(--cream); min-height: 100vh; }
+.branches-page-header { text-align: center; padding: 26px 16px 6px; }
 .branches-title {
   font-family: 'Lalezar', cursive; font-size: 30px; font-weight: 400;
   color: #6B1208; line-height: 1.0;
@@ -304,7 +304,10 @@ body {
   width: 50px; height: 1px;
   background: linear-gradient(to right, transparent, #B8830A, transparent);
 }
-.branches-grid { display: grid; grid-template-columns: 1fr; gap: 14px; width: 100%; }
+.branches-grid {
+  display: grid; grid-template-columns: 1fr; gap: 14px;
+  width: 100%; padding: 16px 16px 40px;
+}
 .branch-card {
   background: rgba(255,253,249,0.9);
   border: 1px solid rgba(220,205,185,0.70);
@@ -338,12 +341,9 @@ body {
 .branch-btn-call { background: #FFF3E0; color: var(--orange-d); border: 1px solid rgba(224,123,12,0.25); }
 
 @media (min-width: 720px) {
-  .branches-section {
-    width: 100vw; margin-left: calc(50% - 50vw); margin-right: calc(50% - 50vw);
-    padding: 0 24px;
-  }
   .branches-grid {
-    grid-template-columns: repeat(3, 1fr); max-width: 960px; margin: 0 auto; gap: 20px;
+    grid-template-columns: repeat(3, 1fr); max-width: 960px;
+    margin: 0 auto; gap: 20px; padding: 16px 24px 50px;
   }
 }
 
@@ -607,7 +607,11 @@ body {
 .main-container.visible .status-badge { animation: scaleIn 0.45s ease 0.4s both; }
 .main-container.visible .links       { animation: fadeSlideUp 0.5s ease 0.45s both; }
 .main-container.visible .map-section { animation: fadeSlideUp 0.5s ease 0.55s both; }
-.main-container.visible .branches-section { animation: fadeSlideUp 0.5s ease 0.62s both; }
+/* Branches page entrance (mirrors menu page's category-card reveal) */
+#page-branches.active .branch-card { animation: fadeSlideUp 0.5s ease both; }
+#page-branches.active .branch-card:nth-child(1) { animation-delay: 0.1s; }
+#page-branches.active .branch-card:nth-child(2) { animation-delay: 0.18s; }
+#page-branches.active .branch-card:nth-child(3) { animation-delay: 0.26s; }
 
 /* Glow pulse on the menu button */
 .btn-menu { animation: glowPulse 3s ease-in-out 1.5s infinite; }
@@ -652,6 +656,7 @@ body {
   to   { opacity:1; transform: translateX(0); }
 }
 .main-container.visible .link-btn:nth-child(1) { animation: swipeFromRight 0.45s cubic-bezier(0.25,0.46,0.45,0.94) 0.5s both; }
+.main-container.visible .link-btn:nth-child(2) { animation: swipeFromRight 0.45s cubic-bezier(0.25,0.46,0.45,0.94) 0.62s both; }
 .main-container.visible .link-btn:nth-child(3) { animation: swipeFromRight 0.45s cubic-bezier(0.25,0.46,0.45,0.94) 0.74s both; }
 .main-container.visible .link-btn:nth-child(4) { animation: swipeFromRight 0.45s cubic-bezier(0.25,0.46,0.45,0.94) 0.86s both; }
 .main-container.visible .link-btn:nth-child(5) { animation: swipeFromRight 0.45s cubic-bezier(0.25,0.46,0.45,0.94) 0.98s both; }
@@ -839,14 +844,17 @@ body {
         </span>
       </div>
 
-      <!-- Branches: rendered from the `branches` data array in the script below.
-           To update a branch (new maps link / new photo), edit only its entry there. -->
-      <div class="branches-section">
-        <div class="branches-header">
-          <h2 class="branches-title">فروعنا</h2>
-          <p class="branches-subtitle">زورونا في أقرب فرع</p>
+      <div onclick="showBranches()" class="link-btn btn-branches">
+        <div class="btn-icon">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#7C4DFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-5.686-7-11a7 7 0 0 1 14 0c0 5.314-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
         </div>
-        <div class="branches-grid" id="branchesGrid"></div>
+        <div class="btn-text">
+          <span class="btn-label">فروعنا</span>
+          <span class="btn-sublabel">تعرف على مواقع فروعنا</span>
+        </div>
+        <span class="btn-arrow">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </span>
       </div>
 
       <a href="https://wa.me/971507082056" target="_blank" class="link-btn btn-whatsapp">
@@ -1033,6 +1041,25 @@ body {
 
 </div>
 
+<!-- ══════════════════════════════════════
+     BRANCHES PAGE
+══════════════════════════════════════ -->
+<div id="page-branches" class="page">
+  <div class="main-back-bar">
+    <button class="main-back-btn" onclick="hideBranches()">
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      رجوع للصفحة الرئيسية
+    </button>
+  </div>
+  <div class="branches-page-header">
+    <h2 class="branches-title">فروعنا</h2>
+    <p class="branches-subtitle">زورونا في أقرب فرع</p>
+  </div>
+  <!-- Rendered from the `branches` data array in the script below.
+       To update a branch (new maps link / new photo), edit only its entry there. -->
+  <div class="branches-grid" id="branchesGrid"></div>
+</div>
+
 <!-- ══ FALLING LEAVES canvas (drawn lazily, see script below) ══ -->
 <canvas id="leaves-canvas"></canvas>
 
@@ -1193,6 +1220,16 @@ function showMenu() {
 }
 function hideMenu() {
   document.getElementById('page-menu').classList.remove('active');
+  document.getElementById('page-main').classList.add('active');
+  window.scrollTo(0, 0);
+}
+function showBranches() {
+  document.getElementById('page-main').classList.remove('active');
+  document.getElementById('page-branches').classList.add('active');
+  window.scrollTo(0, 0);
+}
+function hideBranches() {
+  document.getElementById('page-branches').classList.remove('active');
   document.getElementById('page-main').classList.add('active');
   window.scrollTo(0, 0);
 }
@@ -1652,4 +1689,4 @@ function openImageMenu(imgUrl, title){
 </script>
 
 </body>
-     </html>
+</html>
