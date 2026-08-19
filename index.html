@@ -33,13 +33,13 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
-  --bg:         #F7F2EB;
+  --bg:         #FFFFFF;
   --espresso:   #2B1506;
   --brown:      #6B3A1F;
   --brown-mid:  #9A5C32;
   --gold:       #B8830A;
   --gold-light: #D4A830;
-  --border:     #E0D0BE;
+  --border:     #E5E5E5;
   /* menu vars */
   --orange:   #E07B0C;
   --orange-l: #F5A535;
@@ -47,9 +47,13 @@
   --m-brown:  #3B1A05;
   --m-brown-m:#7A4820;
   --m-brown-l:#B07040;
-  --cream:    #F5EDE3;
-  --cream-d:  #EAD9C5;
+  --cream:    #FFFFFF;
+  --cream-d:  #F0F0F0;
   --white:    #FFFFFF;
+  /* green accent (used selectively — icons, dividers, hovers, badges) */
+  --green:       #1F7A4D;
+  --green-d:     #145C36;
+  --green-light: #E6F5EC;
 }
 
 html, body { height: 100%; }
@@ -82,7 +86,7 @@ body {
 ══════════════════════════════════════ */
 #page-main {
   min-height: 100vh;
-  background: #EDE8DF;
+  background: #FFFFFF;
   flex-direction: column;
   align-items: center;
   padding: 0 0 60px;
@@ -98,12 +102,12 @@ body {
 }
 .main-container.visible { opacity: 1; }
 
-/* ── Hero: food image fills top, fades into beige ── */
+/* ── Hero: food image fills top, fades into white ── */
 .main-hero-section {
   width: 100%; position: relative;
   height: 78vw; max-height: 400px; min-height: 300px;
   overflow: hidden; flex-shrink: 0;
-  background-color: #EDE8DF; /* avoids flash before bg image paints */
+  background-color: #FFFFFF; /* avoids flash before bg image paints */
 }
 .main-hero-bg {
   position: absolute; inset: 0;
@@ -113,15 +117,15 @@ body {
   will-change: transform;
 }
 .main-hero-section.loaded .main-hero-bg { transform: scale(1); }
-/* top-to-bottom fade: very light at top, fully opaque beige at bottom */
+/* top-to-bottom fade: very light at top, fully opaque white at bottom */
 .main-hero-section::after {
   content: ''; position: absolute; inset: 0; z-index: 2; pointer-events: none;
   background: linear-gradient(
     to bottom,
-    rgba(237,232,223,0.05)  0%,
-    rgba(237,232,223,0.10) 30%,
-    rgba(237,232,223,0.55) 65%,
-    rgba(237,232,223,1.00) 100%
+    rgba(255,255,255,0.05)  0%,
+    rgba(255,255,255,0.10) 30%,
+    rgba(255,255,255,0.55) 65%,
+    rgba(255,255,255,1.00) 100%
   );
 }
 /* ── Identity block sits centered in hero ── */
@@ -204,8 +208,8 @@ body {
 .link-btn {
   display: flex; align-items: center; gap: 14px; padding: 14px 16px;
   border-radius: 18px;
-  background: rgba(255,253,249,0.88);
-  border: 1px solid rgba(220,205,185,0.70);
+  background: rgba(255,255,255,0.9);
+  border: 1px solid rgba(200,200,200,0.55);
   box-shadow: 0 2px 12px rgba(43,21,6,0.06), 0 1px 0 rgba(255,255,255,0.9) inset;
   text-decoration: none; cursor: pointer;
   transition: transform .22s cubic-bezier(0.4,0,0.2,1);
@@ -263,7 +267,7 @@ body {
 .map-section {
   width: calc(100% - 32px); margin: 20px 16px 0;
   border-radius: 20px; overflow: hidden;
-  border: 1px solid rgba(220,205,185,0.6);
+  border: 1px solid rgba(200,200,200,0.55);
   box-shadow: 0 4px 20px rgba(43,21,6,0.08);
 }
 .map-section iframe { width: 100%; height: 190px; display: block; border: none; }
@@ -309,8 +313,9 @@ body {
   width: 100%; padding: 16px 16px 40px;
 }
 .branch-card {
-  background: rgba(255,253,249,0.9);
-  border: 1px solid rgba(220,205,185,0.70);
+  background: rgba(255,255,255,0.95);
+  border: 1px solid rgba(200,200,200,0.55);
+  border-top: 2px solid var(--green);
   border-radius: 20px; overflow: hidden;
   box-shadow: 0 4px 20px rgba(43,21,6,0.08);
   display: flex; flex-direction: column;
@@ -338,7 +343,7 @@ body {
 }
 .branch-btn:active { transform: scale(0.96); }
 .branch-btn-map { background: #2B1506; color: #D4A830; }
-.branch-btn-call { background: #FFF3E0; color: var(--orange-d); border: 1px solid rgba(224,123,12,0.25); }
+.branch-btn-call { background: var(--green-light); color: var(--green-d); border: 1px solid rgba(31,122,77,0.25); }
 
 @media (min-width: 720px) {
   .branches-grid {
@@ -347,44 +352,126 @@ body {
   }
 }
 
-/* Compact single-column layout for narrow phones: smaller header,
-   shorter images, tighter padding so all 3 branches need far less
-   scrolling than the default card size above. */
+/* ── Compact mobile branches layout ──────────────────────
+   Single column is kept (per the standalone page's existing
+   structure), but every card is shrunk down so all 3 branches
+   fit within (or very close to) the first mobile viewport. ── */
 @media (max-width: 600px) {
-  .branches-page-header { padding: 14px 16px 4px; }
-  .branches-title { font-size: 24px; }
-  .branches-subtitle { font-size: 10.5px; letter-spacing: 2px; margin-top: 3px; }
-  .branches-subtitle::after { width: 36px; margin-top: 5px; }
-  .branches-grid {
-    grid-template-columns: 1fr; gap: 8px; padding: 8px 14px 20px;
+  .branches-page-header {
+    padding: 14px 16px 4px;
   }
-  .branch-card { border-radius: 14px; }
-  .branch-img-wrap { aspect-ratio: 16 / 6; }
-  .branch-info { padding: 8px 12px 10px; gap: 6px; }
-  .branch-name { font-size: 14px; }
-  .branch-actions { gap: 6px; }
-  .branch-btn { padding: 8px 8px; min-height: 40px; font-size: 12px; border-radius: 9px; }
+
+  .branches-title {
+    font-size: 24px;
+  }
+
+  .branches-subtitle {
+    font-size: 10.5px;
+    letter-spacing: 2px;
+    margin-top: 3px;
+  }
+
+  .branches-subtitle::after {
+    width: 36px;
+    margin: 5px auto 0;
+  }
+
+  .branches-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding: 8px 14px 18px;
+  }
+
+  .branch-card {
+    border-radius: 14px;
+    flex-direction: row;
+  }
+
+  .branch-img-wrap {
+    width: 34%;
+    aspect-ratio: auto;
+    flex-shrink: 0;
+  }
+
+  .branch-info {
+    padding: 8px 10px 8px 8px;
+    gap: 6px;
+    flex: 1;
+    justify-content: center;
+    min-width: 0;
+  }
+
+  .branch-name {
+    font-size: 14px;
+    line-height: 1.2;
+  }
+
+  .branch-actions {
+    gap: 6px;
+  }
+
+  .branch-btn {
+    padding: 8px 8px;
+    min-height: 38px;
+    font-size: 12px;
+    border-radius: 9px;
+  }
 }
 
-/* Extra-short phone screens: trim further so 3 cards fit with
-   minimal scrolling even on smaller device heights. */
+/* Extra-short screens: shrink further so all 3 cards clear the viewport */
 @media (max-width: 600px) and (max-height: 700px) {
-  .branches-page-header { padding: 8px 16px 2px; }
-  .branches-title { font-size: 20px; }
-  .branches-subtitle { font-size: 9px; margin-top: 2px; }
-  .branches-subtitle::after { margin-top: 4px; }
-  .branches-grid { gap: 6px; padding: 6px 12px 12px; }
-  .branch-img-wrap { aspect-ratio: 16 / 5; }
-  .branch-info { padding: 6px 10px 8px; gap: 4px; }
-  .branch-name { font-size: 13px; }
-  .branch-btn { padding: 6px 8px; min-height: 36px; font-size: 11px; }
+  .branches-page-header {
+    padding: 10px 16px 2px;
+  }
+
+  .branches-title {
+    font-size: 20px;
+  }
+
+  .branches-subtitle {
+    font-size: 9.5px;
+    margin-top: 2px;
+  }
+
+  .branches-grid {
+    gap: 6px;
+    padding: 6px 12px 12px;
+  }
+
+  .branch-card {
+    border-radius: 12px;
+  }
+
+  .branch-img-wrap {
+    width: 30%;
+  }
+
+  .branch-info {
+    padding: 6px 8px 6px 6px;
+    gap: 4px;
+  }
+
+  .branch-name {
+    font-size: 12.5px;
+  }
+
+  .branch-actions {
+    gap: 4px;
+  }
+
+  .branch-btn {
+    padding: 6px 6px;
+    min-height: 32px;
+    font-size: 11px;
+    border-radius: 8px;
+  }
 }
 
 /* ── Footer ── */
 .footer { margin-top: 28px; text-align: center; width: 100%; padding: 0 16px; }
 .footer-divider { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
 .footer-divider::before, .footer-divider::after {
-  content: ''; flex: 1; height: 1px; background: #D8C8B0;
+  content: ''; flex: 1; height: 1px; background: var(--green);
 }
 .footer p { font-size: 10px; color: #8A6848; letter-spacing: 2px; font-family: 'Cormorant Garamond', serif; text-transform: uppercase; }
 
@@ -502,7 +589,7 @@ body {
   cursor: pointer; font-size: 17px; flex-shrink: 0;
   transition: background .2s; color: var(--orange);
 }
-.inner-back-btn:hover { background: #DEC8AC; }
+.inner-back-btn:hover { background: var(--green-light); }
 .inner-title { font-family: 'Cairo', sans-serif; font-size: 19px; font-weight: 800; color: var(--m-brown); flex: 1; }
 .inner-emoji { font-size: 22px; }
 
@@ -742,13 +829,13 @@ body {
 
 /* ── Skeleton / Image loading states ── */
 @keyframes skeletonPulse {
-  0%, 100% { background-color: #EAD9C5; }
-  50%       { background-color: #F5EDE3; }
+  0%, 100% { background-color: #EFEFEF; }
+  50%       { background-color: #F8F8F8; }
 }
 .prod-img-wrap::before {
   content: '';
   position: absolute; inset: 0;
-  background: #EAD9C5;
+  background: #EFEFEF;
   animation: skeletonPulse 1.4s ease-in-out infinite;
   z-index: 0;
   border-radius: inherit;
@@ -764,7 +851,7 @@ body {
 .cat-img-wrap::before {
   content: '';
   position: absolute; inset: 0;
-  background: #EAD9C5;
+  background: #EFEFEF;
   animation: skeletonPulse 1.4s ease-in-out infinite;
   z-index: 0;
 }
@@ -852,7 +939,7 @@ body {
     <!-- ══ WAVE SEPARATOR ══ -->
     <div class="wave-separator">
       <svg viewBox="0 0 540 28" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-        <path class="wave-path" d="M0,14 C60,28 120,0 180,14 C240,28 300,0 360,14 C420,28 480,0 540,14 L540,28 L0,28 Z" fill="#EDE8DF"/>
+        <path class="wave-path" d="M0,14 C60,28 120,0 180,14 C240,28 300,0 360,14 C420,28 480,0 540,14 L540,28 L0,28 Z" fill="#FFFFFF"/>
         <path d="M0,18 C80,8 160,24 240,18 C320,12 400,24 540,16 L540,28 L0,28 Z" fill="rgba(184,131,10,0.10)"/>
       </svg>
     </div>
@@ -951,7 +1038,7 @@ body {
     </div><!-- /links-section -->
 
     <div class="footer">
-      <div class="footer-divider"><span style="color:var(--border);font-size:11px;">✦</span></div>
+      <div class="footer-divider"><span style="color:var(--green);font-size:11px;">✦</span></div>
       <p>Anwar Lebanon &nbsp;·&nbsp; Bakery &amp; Sweets</p>
     </div>
 
@@ -1014,7 +1101,7 @@ body {
 
         <div class="cat-card" onclick="openImageMenu('https://raw.githubusercontent.com/anwarlebanonbakery/bakery-images/main/5_20260819_181017_٠٠٠٠.png','الفطير المشلتت')">
           <div class="cat-img-wrap">
-            <img class="cat-img" src="https://raw.githubusercontent.com/anwarlebanonbakery/bakery-images/main/FB_IMG_1779783656876.jpg" alt="فطير مشلتت" loading="lazy" decoding="async"/>
+            <img class="cat-img" src="https://raw.githubusercontent.com/anwarlebanonbakery/bakery-images/main/IMG-20260819-WA0016.jpg" alt="فطير مشلتت" loading="lazy" decoding="async"/>
             <div class="cat-img-overlay"></div>
           </div>
           <div class="cat-body">
@@ -1025,7 +1112,7 @@ body {
 
         <div class="cat-card wide" onclick="openImageMenu('https://raw.githubusercontent.com/anwarlebanonbakery/bakery-images/main/فلفل_20260819_182728_٠٠٠٠.png','البيتزا')">
           <div class="cat-img-wrap">
-            <img class="cat-img" src="https://raw.githubusercontent.com/anwarlebanonbakery/bakery-images/main/file_0000000046c072468e8ffdc10da83e64.png" alt="بيتزا" loading="lazy" decoding="async"/>
+            <img class="cat-img" src="https://raw.githubusercontent.com/anwarlebanonbakery/bakery-images/main/IMG-20260819-WA0015.jpg" alt="بيتزا" loading="lazy" decoding="async"/>
             <div class="cat-img-overlay"></div>
           </div>
           <div class="cat-body">
@@ -1141,7 +1228,7 @@ function setupImageLoading(img, fallback) {
    placeholder until the real one is supplied. ── */
 const BRANCH_IMG_BASE = 'https://raw.githubusercontent.com/anwarlebanonbakery/bakery-images/main/';
 const DIBBA_MAPS_URL  = 'https://maps.app.goo.gl/GKNfJciwtpbubGek7?g_st=ac';
-const DIBBA_IMAGE     = BRANCH_IMG_BASE + 'file_0000000043e88243b7bed0c0a44c1108.png';
+const DIBBA_IMAGE     = BRANCH_IMG_BASE + 'file_00000000fca48243a8822078ff985a99.png';
 
 const branches = [
   {
@@ -1154,7 +1241,7 @@ const branches = [
     name: 'فرع مربح',
     phone: '0527440118',
     mapsUrl: DIBBA_MAPS_URL, // TEMP: real Maps link not provided yet — replace when available
-    image: BRANCH_IMG_BASE + 'file_00000000e8ac81f4b14431d3ce485dec.png'
+    image: BRANCH_IMG_BASE + 'file_000000004ef88243a1ea47b279cb5ff7.png'
   },
   {
     name: 'فرع الرفاعة',
