@@ -136,35 +136,38 @@ button { font: inherit; }
 }
 .hero-content {
   position: relative; z-index: 2; height: 100%;
-  display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
-  padding: 26px 20px 24px; text-align: center;
+  display: flex; flex-direction: column; align-items: flex-end; justify-content: flex-end;
+  padding: 26px 22px 24px; text-align: right;
 }
 .hero-logo {
-  width: 92px; height: 92px; object-fit: contain; margin-bottom: 10px;
+  width: 84px; height: 84px; object-fit: contain; margin-bottom: 12px;
   filter: drop-shadow(0 6px 16px rgba(0,0,0,0.35));
 }
 .hero-name {
   font-family: 'Lalezar', cursive; font-weight: 400;
-  font-size: clamp(38px, 11vw, 52px); line-height: 1;
+  font-size: clamp(36px, 10vw, 50px); line-height: 1;
   color: #FFFFFF; text-shadow: 0 3px 18px rgba(0,0,0,0.35);
+  align-self: flex-end;
 }
 .hero-tagline {
   font-family: 'Cormorant Garamond', serif; font-size: 12px;
   letter-spacing: 6px; text-transform: uppercase;
   color: #F1E3C4; margin-top: 8px;
+  align-self: flex-end;
 }
 .hero-since {
   font-family: 'Cormorant Garamond', serif; font-weight: 700;
   font-size: 12px; letter-spacing: 3px; text-transform: uppercase;
-  color: var(--gold-light); margin-top: 6px;
+  color: var(--green-light); margin-top: 6px;
   display: flex; align-items: center; gap: 8px;
+  align-self: flex-end;
 }
-.hero-since::before, .hero-since::after { content: ''; width: 22px; height: 1px; background: rgba(212,168,48,0.6); }
+.hero-since::before, .hero-since::after { content: ''; width: 22px; height: 1px; background: rgba(232,245,236,0.5); }
 .status-badge {
   display: inline-flex; align-items: center; gap: 7px;
   padding: 7px 16px 7px 12px; border-radius: 30px;
   font-size: 12px; font-weight: 700; border: 1px solid;
-  margin-top: 16px;
+  margin-top: 16px; align-self: flex-end;
   background: rgba(255,255,255,0.14); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
   color: #FFFFFF;
 }
@@ -180,7 +183,7 @@ button { font: inherit; }
 .section-head { text-align: center; margin-bottom: 16px; }
 .section-eyebrow {
   font-family: 'Cormorant Garamond', serif; font-size: 11px; font-weight: 700;
-  letter-spacing: 4px; text-transform: uppercase; color: var(--gold);
+  letter-spacing: 4px; text-transform: uppercase; color: var(--green-d);
 }
 .section-title {
   font-family: 'Cairo', sans-serif; font-weight: 800; font-size: 21px;
@@ -294,7 +297,7 @@ button { font: inherit; }
 .menu-banner-btn {
   display: inline-flex; align-items: center; gap: 8px;
   margin-top: 14px; padding: 12px 22px; border-radius: 30px;
-  background: var(--gold-light); color: var(--espresso);
+  background: var(--green-deep-grad); color: #FFFFFF;
   font-family: 'Cairo', sans-serif; font-weight: 800; font-size: 13.5px;
   border: none; cursor: pointer;
 }
@@ -304,7 +307,7 @@ button { font: inherit; }
 .footer-logo { width: 46px; height: 46px; object-fit: contain; margin-bottom: 8px; }
 .footer-name { font-family: 'Lalezar', cursive; font-size: 20px; color: var(--espresso); }
 .footer-tagline { font-family: 'Cormorant Garamond', serif; font-size: 10px; letter-spacing: 4px; text-transform: uppercase; color: var(--brown-mid); margin-top: 2px; }
-.footer-since { font-size: 10.5px; color: var(--gold); font-weight: 700; margin-top: 6px; letter-spacing: 1px; }
+.footer-since { font-size: 10.5px; color: var(--green-d); font-weight: 700; margin-top: 6px; letter-spacing: 1px; }
 .footer-social { display: flex; justify-content: center; gap: 10px; margin-top: 16px; }
 .footer-social a {
   width: 34px; height: 34px; border-radius: 50%;
@@ -728,16 +731,6 @@ button { font: inherit; }
       </div>
     </div>
 
-    <!-- 5. BRANCHES (mini) -->
-    <div class="section reveal">
-      <div class="section-head">
-        <div class="section-eyebrow">Find Us</div>
-        <div class="section-title">فروعنا</div>
-        <div class="section-sub">اختار الفرع الأقرب ليك</div>
-      </div>
-    </div>
-    <div class="branch-mini-row" id="branchMiniRow"></div>
-
     <!-- 6. MENU CTA BANNER -->
     <div class="menu-banner reveal" onclick="showMenu()">
       <div class="menu-banner-body">
@@ -1084,32 +1077,8 @@ function filterBranches(query) {
   if (q) document.querySelectorAll('.branches-chip').forEach(c => c.classList.toggle('active', c.dataset.id === 'all'));
 }
 
-/* ── Homepage mini branch cards ── */
-function renderBranchMini() {
-  const row = document.getElementById('branchMiniRow');
-  if (!row) return;
-  row.innerHTML = branches.map(b => `
-    <div class="branch-mini-card" onclick="goToBranch('${b.id}')">
-      <div class="branch-mini-name">${b.name}</div>
-      <div class="branch-mini-loc">
-        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-5.686-7-11a7 7 0 0 1 14 0c0 5.314-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
-        ${b.area}، دبا الفجيرة
-      </div>
-      <div class="branch-mini-btn">
-        عرض الموقع
-        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-      </div>
-    </div>
-  `).join('');
-}
-function goToBranch(id) {
-  showBranches();
-  setTimeout(() => selectBranchChip(id), 50);
-}
-
 renderBranchChips();
 renderBranches();
-renderBranchMini();
 
 document.querySelectorAll('.cat-img, .inner-banner').forEach(img => setupImageLoading(img, CAT_FALLBACK));
 
