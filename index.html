@@ -301,13 +301,18 @@ body {
   .logo-img { width: 150px; height: 150px; }
   .site-name { font-size: 72px; }
   .links-section { padding: 0 24px; }
-  .links-group-grid { flex-direction: row; gap: 14px; }
-  .links-group-grid .link-btn { flex: 1; flex-direction: column; text-align: center; gap: 10px; padding: 20px 16px; }
-  .links-group-grid .link-btn .btn-text { flex: none; width: 100%; }
-  .links-group-grid .link-btn .btn-arrow { display: none; }
-  .links-group-grid .link-btn::before { right: 0; top: 0; bottom: auto; width: 100%; height: 3px; border-radius: 3px 3px 0 0; }
-  .links-secondary-grid { flex-direction: row; align-items: stretch; }
-  .links-secondary-grid .link-panel { flex: 1; }
+  /* Menu + Branches: side by side, kept compact rather than stretched full-width */
+  .links-group .links-group-grid { flex-direction: row; gap: 14px; max-width: 620px; margin: 0 auto; }
+  .links-group .links-group-grid .link-btn { flex: 1; flex-direction: column; text-align: center; gap: 10px; padding: 20px 16px; }
+  .links-group .links-group-grid .link-btn .btn-text { flex: none; width: 100%; }
+  .links-group .links-group-grid .link-btn .btn-arrow { display: none; }
+  .links-group .links-group-grid .link-btn::before { right: 0; top: 0; bottom: auto; width: 100%; height: 3px; border-radius: 3px 3px 0 0; }
+  /* Delivery + Platforms: stacked one below the other, same as mobile — a different layout from the row above */
+  .links-secondary-grid { flex-direction: column; align-items: stretch; }
+  .links-secondary-grid .link-panel { flex: none; }
+  /* Buttons within each delivery/platforms panel keep their own row layout on desktop */
+  .link-panel .links-group-grid { flex-direction: row; }
+  .link-panel .links-group-grid .link-btn { flex: 1; }
 }
 
 
