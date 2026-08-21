@@ -204,8 +204,8 @@ body {
 /* ── Links ── */
 .links-section {
   width: 100%; padding: 0 16px;
-  display: flex; flex-direction: column; gap: 22px;
-  margin-top: 20px;
+  display: flex; flex-direction: column; gap: 28px;
+  margin-top: 24px;
 }
 .links-group-label {
   display: flex; align-items: center; gap: 8px;
@@ -217,25 +217,35 @@ body {
   content: ''; flex: 1; height: 1px; background: rgba(31,122,77,0.18);
 }
 .links-group-grid { display: flex; flex-direction: column; gap: 10px; }
+/* Menu + Branches: always side by side, in both mobile and desktop */
+.links-group > .links-group-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+  align-items: stretch;
+}
+.links-group > .links-group-grid .link-btn { padding: 16px 14px; }
 
-.links-secondary-grid { display: flex; flex-direction: column; gap: 14px; }
+/* Delivery + Platforms: always side by side, in both mobile and desktop */
+.links-secondary-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 18px;
+  align-items: start;
+}
 .link-panel {
   background: var(--green-light); border: 1px solid rgba(31,122,77,0.14);
-  border-radius: 20px; padding: 14px 14px 4px;
+  border-radius: 20px; padding: 16px 16px 6px;
 }
 .link-panel-title {
-  font-family: 'Cairo', sans-serif; font-size: 13px; font-weight: 800;
-  color: var(--green-d); margin: 0 0 2px; padding: 0 2px;
+  font-family: 'Cairo', sans-serif; font-size: 14px; font-weight: 800;
+  color: var(--green-d); margin: 0 0 3px; padding: 0 2px;
 }
 .link-panel-sub {
-  font-family: 'Tajawal', sans-serif; font-size: 11px; font-weight: 500;
-  color: #4E7D65; margin: 0 0 10px; padding: 0 2px;
+  font-family: 'Tajawal', sans-serif; font-size: 12px; font-weight: 500;
+  color: #4E7D65; margin: 0 0 12px; padding: 0 2px;
 }
-.link-panel .links-group-grid { gap: 8px; margin-bottom: 10px; }
+.link-panel .links-group-grid { gap: 10px; margin-bottom: 12px; }
 .link-panel .link-btn { background: rgba(255,255,255,0.95); }
 
 .link-btn {
-  display: flex; align-items: center; gap: 14px; padding: 14px 16px;
+  display: flex; align-items: center; gap: 12px; padding: 14px 14px;
   border-radius: 18px;
   background: rgba(255,255,255,0.9);
   border: 1px solid rgba(200,200,200,0.55);
@@ -281,11 +291,11 @@ body {
 .btn-text { flex: 1; min-width: 0; }
 .btn-label {
   display: block; font-size: 14px; font-weight: 800; color: #1A0A00;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  white-space: normal; overflow-wrap: break-word;
 }
 .btn-sublabel {
   display: block; font-size: 11px; font-weight: 500; color: #6A4828; margin-top: 2px;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  white-space: normal; overflow-wrap: break-word;
 }
 .btn-arrow {
   flex-shrink: 0; color: #C8B090;
@@ -301,18 +311,6 @@ body {
   .logo-img { width: 150px; height: 150px; }
   .site-name { font-size: 72px; }
   .links-section { padding: 0 24px; }
-  /* Menu + Branches: side by side, kept compact rather than stretched full-width */
-  .links-group .links-group-grid { flex-direction: row; gap: 14px; max-width: 620px; margin: 0 auto; }
-  .links-group .links-group-grid .link-btn { flex: 1; flex-direction: column; text-align: center; gap: 10px; padding: 20px 16px; }
-  .links-group .links-group-grid .link-btn .btn-text { flex: none; width: 100%; }
-  .links-group .links-group-grid .link-btn .btn-arrow { display: none; }
-  .links-group .links-group-grid .link-btn::before { right: 0; top: 0; bottom: auto; width: 100%; height: 3px; border-radius: 3px 3px 0 0; }
-  /* Delivery + Platforms: stacked one below the other, same as mobile — a different layout from the row above */
-  .links-secondary-grid { flex-direction: column; align-items: stretch; }
-  .links-secondary-grid .link-panel { flex: none; }
-  /* Buttons within each delivery/platforms panel keep their own row layout on desktop */
-  .link-panel .links-group-grid { flex-direction: row; }
-  .link-panel .links-group-grid .link-btn { flex: 1; }
 }
 
 
