@@ -127,6 +127,34 @@ button { font: inherit; }
   transform: scale(1.05); transition: transform 6s ease;
 }
 .hero.loaded .hero-bg { transform: scale(1); }
+
+/* ── Animated green glow ── */
+.hero-glow {
+  position: absolute; inset: 0; z-index: 1;
+  pointer-events: none; overflow: hidden;
+}
+.hero-glow::before {
+  content: '';
+  position: absolute;
+  top: -25%; left: 50%;
+  width: 140%; aspect-ratio: 2 / 1;
+  transform: translateX(-50%);
+  background: radial-gradient(ellipse at center,
+    rgba(94,210,156,0.55) 0%,
+    rgba(31,122,77,0.35) 40%,
+    rgba(13,54,34,0) 72%);
+  filter: blur(25px);
+  animation: heroGlowMove 9s ease-in-out infinite;
+}
+@keyframes heroGlowMove {
+  0%   { transform: translateX(-54%) translateY(0) scale(1); opacity: 0.75; }
+  50%  { transform: translateX(-46%) translateY(3%) scale(1.12); opacity: 1; }
+  100% { transform: translateX(-54%) translateY(0) scale(1); opacity: 0.75; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-glow::before { animation: none; }
+}
+
 .hero::after {
   content: ''; position: absolute; inset: 0;
   background: linear-gradient(to left,
@@ -309,11 +337,6 @@ button { font: inherit; }
   background: var(--green-deep-grad); color: #FFFFFF;
   font-family: 'Cairo', sans-serif; font-weight: 800; font-size: 13.5px;
   border: none; cursor: pointer;
-  transition: filter .3s ease, transform .18s ease;
-}
-.menu-banner-btn:active { transform: scale(0.97); }
-@media (hover: hover) {
-  .menu-banner-btn:hover { filter: brightness(1.12); }
 }
 
 /* ── 7. Footer ── */
@@ -1668,112 +1691,6 @@ button { font: inherit; }
   max-width: 610px;
 }
 
-/* ══════════════════════════════════════
-   ATMOSPHERE LAYERS — hero (gold light bloom,
-   glass-case ribbing, warm drift, film grain).
-   Pure CSS/SVG, no external shader library —
-   works everywhere, costs nothing on mobile data.
-══════════════════════════════════════ */
-.hero-atmosphere { position: absolute; inset: 0; z-index: 1; overflow: hidden; pointer-events: none; }
-
-.atm-bloom {
-  position: absolute; inset: -25%;
-  background:
-    radial-gradient(circle at 26% 24%, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0) 40%),
-    radial-gradient(circle at 74% 66%, rgba(212,168,48,0.35) 0%, rgba(212,168,48,0) 46%),
-    conic-gradient(from 0deg at 50% 50%, rgba(255,255,255,0.10), rgba(212,168,48,0.10), rgba(255,255,255,0.10), rgba(212,168,48,0.10), rgba(255,255,255,0.10));
-  filter: blur(46px);
-  mix-blend-mode: overlay;
-  opacity: .75;
-  animation: atmSpin 46s linear infinite;
-}
-@keyframes atmSpin { from { transform: rotate(0deg) scale(1.15); } to { transform: rotate(360deg) scale(1.15); } }
-
-.atm-glow {
-  position: absolute; inset: -30%;
-  background: radial-gradient(circle at 50% 50%, var(--gold-light) 0%, rgba(212,168,48,0) 38%);
-  filter: blur(70px);
-  mix-blend-mode: soft-light;
-  opacity: .4;
-  animation: atmDrift 15s ease-in-out infinite;
-}
-@keyframes atmDrift {
-  0%,100% { transform: translate(-6%,-4%) scale(1); }
-  25%     { transform: translate(9%,-10%) scale(1.12); }
-  50%     { transform: translate(5%,8%) scale(0.95); }
-  75%     { transform: translate(-10%,5%) scale(1.05); }
-}
-
-/* Fine diagonal ribbing — echoes the bakery's glass display case */
-.atm-glass {
-  position: absolute; inset: 0;
-  background: repeating-linear-gradient(
-    121deg,
-    rgba(255,255,255,0.10) 0px,
-    rgba(255,255,255,0.10) 2px,
-    rgba(0,0,0,0.03) 2px,
-    rgba(0,0,0,0.03) 10px
-  );
-  mix-blend-mode: overlay;
-  opacity: .35;
-  animation: atmShift 9s ease-in-out infinite;
-}
-@keyframes atmShift { 0%,100% { transform: translateX(0); } 50% { transform: translateX(3px); } }
-
-/* Film grain — subtle premium texture, static-feeling flicker */
-.atm-grain {
-  position: absolute; inset: 0;
-  opacity: .05;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
-  animation: atmGrain .5s steps(2) infinite;
-}
-@keyframes atmGrain {
-  0%   { transform: translate(0,0); }
-  50%  { transform: translate(-2%,1%); }
-  100% { transform: translate(1%,-1%); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .atm-bloom, .atm-glow, .atm-glass, .atm-grain { animation: none !important; }
-}
-
-/* ══════════════════════════════════════
-   TEXT-ROLL CTA — the button label rolls
-   upward into a duplicate line on hover.
-   Desktop-only effect (mouse hover); mobile
-   keeps the existing tap/press feedback.
-══════════════════════════════════════ */
-.btn-roll { overflow: hidden; height: 18px; display: inline-flex; }
-.btn-roll-inner {
-  display: flex; flex-direction: column;
-  transition: transform .5s cubic-bezier(0.25,0.1,0.25,1);
-}
-.btn-roll-line { height: 18px; display: flex; align-items: center; white-space: nowrap; }
-@media (hover: hover) {
-  .menu-banner-btn:hover .btn-roll-inner { transform: translateY(-50%); }
-}
-
-.menu-banner-btn { position: relative; overflow: hidden; }
-.menu-banner-btn-arrow svg { transition: transform .5s cubic-bezier(0.25,0.1,0.25,1); display: block; }
-@media (hover: hover) {
-  .menu-banner-btn:hover .menu-banner-btn-arrow svg { transform: rotate(-45deg); }
-}
-
-/* ══════════════════════════════════════
-   ARROW MICRO-INTERACTION — every "chevron"
-   icon rotates open on hover, tying the whole
-   site's CTAs to one consistent gesture.
-══════════════════════════════════════ */
-.order-arrow svg,
-.social-arrow svg,
-.nav-arrow svg {
-  transition: transform .5s cubic-bezier(0.25,0.1,0.25,1);
-}
-@media (hover: hover) {
-  .order-card:hover .order-arrow svg  { transform: rotate(-45deg); }
-  .social-card:hover .social-arrow svg { transform: rotate(-45deg); }
-}
-
 </style>
 </head>
 <body>
@@ -1790,12 +1707,7 @@ button { font: inherit; }
     <!-- 1. HERO -->
     <div class="hero" id="mainHero">
       <div class="hero-bg"></div>
-      <div class="hero-atmosphere" aria-hidden="true">
-        <div class="atm-bloom"></div>
-        <div class="atm-glow"></div>
-        <div class="atm-glass"></div>
-        <div class="atm-grain"></div>
-      </div>
+      <div class="hero-glow"></div>
       <div class="hero-content">
         <img src="https://i.ibb.co/C56jGDdN/file-000000008d3c71f7bd863cb6dc63ca7a.png" alt="أنوار لبنان" class="hero-logo" width="92" height="92" fetchpriority="high" decoding="async"/>
         <h1 class="hero-name">أنوار لبنان</h1>
@@ -1926,15 +1838,8 @@ button { font: inherit; }
         <div class="menu-banner-title">قائمة الطعام</div>
         <div class="menu-banner-sub">اكتشف كل أصنافنا وأسعارنا</div>
         <button class="menu-banner-btn" onclick="showMenu()">
-          <span class="btn-roll">
-            <span class="btn-roll-inner">
-              <span class="btn-roll-line">تصفح القائمة</span>
-              <span class="btn-roll-line">تصفح القائمة</span>
-            </span>
-          </span>
-          <span class="menu-banner-btn-arrow">
-            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-          </span>
+          تصفح القائمة
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
         </button>
       </div>
     </div>
