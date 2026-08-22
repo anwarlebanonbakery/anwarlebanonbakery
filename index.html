@@ -608,7 +608,7 @@ button { font: inherit; }
 .branch-btn { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 12px 10px; border-radius: 14px; font-family: 'Tajawal', sans-serif; font-size: 13px; font-weight: 800; text-decoration: none; cursor: pointer; -webkit-tap-highlight-color: transparent; transition: transform 0.2s; text-align: center; line-height: 1.1; }
 .branch-btn:active { transform: scale(0.97); }
 .branch-btn-map { background: var(--green-deep-grad); color: #FFFFFF; flex: 1; }
-.branch-btn-call { background: var(--green-light); color: var(--green-d); border: 1px solid rgba(31,122,77,.22); flex: 1; }
+.branch-btn-call { background: var(--green-light); color: var(--green-d); border: 1px solid rgba(31,122,77,0.22); flex: 1; }
 
 @media (min-width: 720px) {
   .branches-page-header { padding: 26px 16px 6px; }
@@ -1691,68 +1691,6 @@ button { font: inherit; }
   max-width: 610px;
 }
 
-/* ══════════════════════════════════════
-   PROFESSIONAL 3D TILT CARD ANIMATION
-   Scoped strictly to #page-main so the menu and
-   branches subpages are completely untouched.
-   Applied via JS (adds .tilt-card + inline vars),
-   sizes/positions of every card stay exactly as
-   defined above — only a subtle depth/light layer
-   is added on top, driven by pointer position.
-══════════════════════════════════════ */
-#page-main .tilt-card {
-  --tiltX: 0deg;
-  --tiltY: 0deg;
-  --glowX: 50%;
-  --glowY: 50%;
-  --glowOpacity: 0;
-  transform-style: preserve-3d;
-  perspective: 900px;
-  transform: perspective(900px) rotateX(var(--tiltX)) rotateY(var(--tiltY)) translateZ(0);
-  transition: transform .5s cubic-bezier(.22,.9,.32,1), box-shadow .5s cubic-bezier(.22,.9,.32,1);
-  will-change: transform;
-}
-#page-main .tilt-card.tilt-active {
-  transition: transform .08s linear, box-shadow .25s ease;
-}
-#page-main .tilt-card::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: radial-gradient(circle at var(--glowX) var(--glowY),
-    rgba(255,255,255,.55) 0%,
-    rgba(255,255,255,.16) 28%,
-    rgba(255,255,255,0) 60%);
-  opacity: var(--glowOpacity);
-  transition: opacity .35s ease;
-  pointer-events: none;
-  z-index: 3;
-  mix-blend-mode: soft-light;
-}
-#page-main .tilt-card > * { position: relative; z-index: 1; }
-/* keep the pseudo-element from stacking oddly on cards
-   that already rely on absolute-positioned children */
-#page-main .nav-card.tilt-card,
-#page-main .order-card.tilt-card,
-#page-main .social-card.tilt-card,
-#page-main .branch-mini-card.tilt-card,
-#page-main .menu-banner.tilt-card {
-  position: relative;
-  overflow: hidden;
-}
-#page-main .menu-banner.tilt-card::before { z-index: 4; }
-@media (hover: none) {
-  /* touch devices: skip the pointer-tilt layer, keep the calm existing tap states */
-  #page-main .tilt-card { transform: none !important; }
-  #page-main .tilt-card::before { display: none; }
-}
-@media (prefers-reduced-motion: reduce) {
-  #page-main .tilt-card,
-  #page-main .tilt-card.tilt-active { transition: none; transform: none !important; }
-  #page-main .tilt-card::before { display: none; }
-}
-
 </style>
 </head>
 <body>
@@ -2108,58 +2046,6 @@ setInterval(updateStatus, 60000);
     });
   }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
   els.forEach(e => io.observe(e));
-})();
-
-/* ══════════════════════════════════════
-   HOMEPAGE-ONLY PROFESSIONAL CARD TILT
-   Adds a subtle pointer-driven 3D tilt + soft
-   light sheen to every card on the homepage
-   (#page-main), inspired by premium card UI.
-   Cards keep their exact size/position — this
-   only layers a transform + highlight on top,
-   and it fully resets on mouse-leave.
-══════════════════════════════════════ */
-(function initHomeTilt(){
-  const root = document.getElementById('page-main');
-  if (!root) return;
-  if (window.matchMedia('(hover: none)').matches) return;
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-  const selector = '.nav-card, .order-card, .social-card, .branch-mini-card, .menu-banner';
-  const cards = root.querySelectorAll(selector);
-
-  const MAX_TILT = 7; // degrees — kept subtle so text stays perfectly readable
-
-  cards.forEach(card => {
-    card.classList.add('tilt-card');
-
-    const onMove = (e) => {
-      const rect = card.getBoundingClientRect();
-      const px = (e.clientX - rect.left) / rect.width;  // 0..1
-      const py = (e.clientY - rect.top) / rect.height;  // 0..1
-
-      const tiltY = (px - 0.5) * 2 * MAX_TILT;   // left/right
-      const tiltX = -(py - 0.5) * 2 * MAX_TILT;  // up/down
-
-      card.style.setProperty('--tiltX', tiltX.toFixed(2) + 'deg');
-      card.style.setProperty('--tiltY', tiltY.toFixed(2) + 'deg');
-      card.style.setProperty('--glowX', (px * 100).toFixed(1) + '%');
-      card.style.setProperty('--glowY', (py * 100).toFixed(1) + '%');
-      card.style.setProperty('--glowOpacity', '1');
-    };
-
-    const onEnter = () => { card.classList.add('tilt-active'); };
-    const onLeave = () => {
-      card.classList.remove('tilt-active');
-      card.style.setProperty('--tiltX', '0deg');
-      card.style.setProperty('--tiltY', '0deg');
-      card.style.setProperty('--glowOpacity', '0');
-    };
-
-    card.addEventListener('mouseenter', onEnter);
-    card.addEventListener('mousemove', onMove);
-    card.addEventListener('mouseleave', onLeave);
-  });
 })();
 
 /* ── Smart image loader: adds img-loaded class + handles errors ── */
