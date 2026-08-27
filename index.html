@@ -1880,6 +1880,17 @@ button { font: inherit; }
     <div style="background:var(--cream);flex:1;">
       <div class="home-grid" id="homeGrid">
 
+        <div class="cat-card" onclick="openCategory('cakeTemplates')">
+          <div class="cat-img-wrap">
+            <img class="cat-img" src="https://raw.githubusercontent.com/anwarlebanonbakery/bakery-images/main/file_000000000740820a8d2409ab443818d0.png" alt="قوالب كيك" loading="lazy" decoding="async"/>
+            <div class="cat-img-overlay"></div>
+          </div>
+          <div class="cat-body">
+            <div class="cat-name">قوالب الكيك</div>
+            <div class="cat-meta"><div class="cat-arrow">←</div><div class="cat-count">16 تصميم</div></div>
+          </div>
+        </div>
+
         <div class="cat-card" onclick="openCategory('oriental')">
           <div class="cat-img-wrap">
             <img class="cat-img" src="https://i.ibb.co/SDRmyqb2/f74c473db15d9fd47e73b3c2b036a0bf.jpg" alt="حلويات شرقية" loading="lazy" decoding="async"/>
@@ -1924,7 +1935,7 @@ button { font: inherit; }
           </div>
         </div>
 
-        <div class="cat-card wide" onclick="openImageMenu('https://raw.githubusercontent.com/anwarlebanonbakery/bakery-images/main/فلفل_20260819_182728_٠٠٠٠.png','البيتزا')">
+        <div class="cat-card" onclick="openImageMenu('https://raw.githubusercontent.com/anwarlebanonbakery/bakery-images/main/فلفل_20260819_182728_٠٠٠٠.png','البيتزا')">
           <div class="cat-img-wrap">
             <img class="cat-img" src="https://raw.githubusercontent.com/anwarlebanonbakery/bakery-images/main/IMG-20260819-WA0015.jpg" alt="بيتزا" loading="lazy" decoding="async"/>
             <div class="cat-img-overlay"></div>
@@ -2251,6 +2262,29 @@ setTimeout(checkScrollIndicator, 600);
    requested when a category is actually opened
 ══════════════════════════════════════ */
 const categories = {
+  cakeTemplates:{
+    name:'قوالب الكيك', emoji:'🎂',
+    banner:'https://raw.githubusercontent.com/anwarlebanonbakery/bakery-images/main/file_00000000d4d8820a8c4fc943f3ff7a56.png',
+    tag:'نصنع أي شكل تريده',
+    items:[
+      {name:'كيكة الفراولة',            img:'https://raw.githubusercontent.com/anwarlebanonbakery/bakery-images/main/IMG-20260827-WA0004.jpg'},
+      {name:'كيكة باربي',               img:'https://raw.githubusercontent.com/anwarlebanonbakery/bakery-images/main/IMG-20260827-WA0005.jpg'},
+      {name:'كيكة ماشا والدب',          img:'https://raw.githubusercontent.com/anwarlebanonbakery/bakery-images/main/IMG-20260827-WA0006.jpg'},
+      {name:'كيكة شوكولاتة الخرز',      img:'https://raw.githubusercontent.com/anwarlebanonbakery/bakery-images/main/IMG-20260827-WA0007.jpg'},
+      {name:'كيكة برشلونة',             img:'https://raw.githubusercontent.com/anwarlebanonbakery/bakery-images/main/IMG-20260827-WA0008.jpg'},
+      {name:'كيكة الغابة السوداء',      img:'https://raw.githubusercontent.com/anwarlebanonbakery/bakery-images/main/IMG-20260827-WA0009.jpg'},
+      {name:'كيكة الكريمة',             img:'https://raw.githubusercontent.com/anwarlebanonbakery/bakery-images/main/IMG-20260827-WA0010.jpg'},
+      {name:'كيكة الشوكولاتة',          img:'https://raw.githubusercontent.com/anwarlebanonbakery/bakery-images/main/IMG-20260827-WA0011.jpg'},
+      {name:'تشيز كيك',                 img:'https://raw.githubusercontent.com/anwarlebanonbakery/bakery-images/main/IMG-20260827-WA0012.jpg'},
+      {name:'كيكة الشوكولاتة والتوت',   img:'https://raw.githubusercontent.com/anwarlebanonbakery/bakery-images/main/IMG-20260827-WA0013.jpg'},
+      {name:'كيكة الكرز الملكي',        img:'https://raw.githubusercontent.com/anwarlebanonbakery/bakery-images/main/IMG-20260827-WA0014.jpg'},
+      {name:'كيكة شوكولاتة بالكريمة',   img:'https://raw.githubusercontent.com/anwarlebanonbakery/bakery-images/main/IMG-20260827-WA0015.jpg'},
+      {name:'كيكة كراميل فانيليا',      img:'https://raw.githubusercontent.com/anwarlebanonbakery/bakery-images/main/IMG-20260827-WA0016.jpg'},
+      {name:'كيكة موس الشوكولاتة',      img:'https://raw.githubusercontent.com/anwarlebanonbakery/bakery-images/main/IMG-20260827-WA0017.jpg'},
+      {name:'كيكة فادج ميرور',          img:'https://raw.githubusercontent.com/anwarlebanonbakery/bakery-images/main/IMG-20260827-WA0018.jpg'},
+      {name:'كيكة قلب الشوكولاتة',      img:'https://raw.githubusercontent.com/anwarlebanonbakery/bakery-images/main/IMG-20260827-WA0019.jpg'},
+    ]
+  },
   oriental:{
     name:'الحلويات الشرقية', emoji:'🍯',
     banner:'https://i.ibb.co/SDRmyqb2/f74c473db15d9fd47e73b3c2b036a0bf.jpg',
